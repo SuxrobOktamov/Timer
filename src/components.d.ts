@@ -7,14 +7,19 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    README: typeof import('./components/README.md')['default']
+    AppIntegrationSetting: typeof import('./components/AppIntegrationSetting.vue')['default']
+    AppNotificationSetting: typeof import('./components/AppNotificationSetting.vue')['default']
+    AppSoundSetting: typeof import('./components/AppSoundSetting.vue')['default']
+    AppTaskSetting: typeof import('./components/AppTaskSetting.vue')['default']
+    AppThemeSetting: typeof import('./components/AppThemeSetting.vue')['default']
+    AppTimerSetting: typeof import('./components/AppTimerSetting.vue')['default']
+    MobileAlarmDialog: typeof import('./components/MobileAlarmDialog.vue')['default']
+    PremiumDialog: typeof import('./components/PremiumDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TheCounter: typeof import('./components/TheCounter.vue')['default']
-    TheFooter: typeof import('./components/TheFooter.vue')['default']
     TheHeader: typeof import('./components/TheHeader.vue')['default']
-    TheInput: typeof import('./components/TheInput.vue')['default']
-    TheSettigsDialog: typeof import('./components/TheSettigsDialog.vue')['default']
     TheSettingsDialog: typeof import('./components/TheSettingsDialog.vue')['default']
+    TodoistDialog: typeof import('./components/TodoistDialog.vue')['default']
+    WebhookDialog: typeof import('./components/WebhookDialog.vue')['default']
   }
 }
