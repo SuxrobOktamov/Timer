@@ -8,10 +8,10 @@
         "no-tabs": [
             "error"
         ],
-        // "linebreak-style": [
-        //     "",
-        //     "windows"
-        // ],
+        "linebreak-style": [
+            "",
+            "windows"
+        ],
         "eol-last": [
             "warn",
             "always"

@@ -12,6 +12,9 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     TheCounter: typeof import('./components/TheCounter.vue')['default']
     TheFooter: typeof import('./components/TheFooter.vue')['default']
+    TheHeader: typeof import('./components/TheHeader.vue')['default']
     TheInput: typeof import('./components/TheInput.vue')['default']
+    TheSettigsDialog: typeof import('./components/TheSettigsDialog.vue')['default']
+    TheSettingsDialog: typeof import('./components/TheSettingsDialog.vue')['default']
   }
 }
