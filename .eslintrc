@@ -3,18 +3,35 @@
     "extends": [
         "@antfu"
     ],
+
     "rules": {
         "curly": "off",
         "no-tabs": [
             "error"
         ],
-        "linebreak-style": [
-            "",
-            "windows"
-        ],
+        "vue/custom-event-name-casing": ["error", "kebab-case", {
+            "ignores": []
+        }],
+        "vue/max-attributes-per-line": ["error", {
+            "singleline": {
+                "max": 3
+            },
+            "multiline": {
+                "max": 1
+            }
+        }],
+        // "linebreak-style": [
+        //     "error",
+        //     "windows"
+        // ],
         "eol-last": [
             "warn",
             "always"
+        ],
+        "@typescript-eslint/brace-style": [
+            "error",
+            "1tbs",
+            { "allowSingleLine": true }
         ],
         "@typescript-eslint/semi": [
             "error",

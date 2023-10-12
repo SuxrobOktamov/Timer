@@ -7,14 +7,22 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    README: typeof import('./components/README.md')['default']
+    AppSoundSetting: typeof import('./components/AppSoundSetting.vue')['default']
+    AppTaskSetting: typeof import('./components/AppTaskSetting.vue')['default']
+    IntegrationTodoistInfoDialog: typeof import('./components/IntegrationTodoistInfoDialog.vue')['default']
+    IntegrationWebhookInfoDialog: typeof import('./components/IntegrationWebhookInfoDialog.vue')['default']
+    NotificationMobileInfoDialog: typeof import('./components/NotificationMobileInfoDialog.vue')['default']
+    PremiumDialog: typeof import('./components/PremiumDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TheCounter: typeof import('./components/TheCounter.vue')['default']
+    SettingsDialogIntegration: typeof import('./components/SettingsDialogIntegration.vue')['default']
+    SettingsDialogNotification: typeof import('./components/SettingsDialogNotification.vue')['default']
+    SettingsDialogSound: typeof import('./components/SettingsDialogSound.vue')['default']
+    SettingsDialogTask: typeof import('./components/SettingsDialogTask.vue')['default']
+    SettingsDialogTheme: typeof import('./components/SettingsDialogTheme.vue')['default']
+    SettingsDialogTimer: typeof import('./components/SettingsDialogTimer.vue')['default']
     TheFooter: typeof import('./components/TheFooter.vue')['default']
     TheHeader: typeof import('./components/TheHeader.vue')['default']
-    TheInput: typeof import('./components/TheInput.vue')['default']
-    TheSettigsDialog: typeof import('./components/TheSettigsDialog.vue')['default']
     TheSettingsDialog: typeof import('./components/TheSettingsDialog.vue')['default']
   }
 }

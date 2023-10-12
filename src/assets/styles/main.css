@@ -17,7 +17,6 @@ body,
   padding-bottom: 12px;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top);
-  background: #ba4949;
 }
 
 html.dark {

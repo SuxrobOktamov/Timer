@@ -1,8 +1,11 @@
 {
     "cSpell.words": [
         "antfu",
+        "Cirillo",
         "demi",
+        "Francesco",
         "headlessui",
+        "heroicons",
         "iconify",
         "intlify",
         "linebreak",
@@ -15,7 +18,8 @@
         "vitejs",
         "Vitesse",
         "vitest",
-        "vueuse"
+        "vueuse",
+        "Yuya"
     ],
     "i18n-ally.sourceLanguage": "en",
     "i18n-ally.keystyle": "nested",
