@@ -14,7 +14,7 @@
         { id: 3, type: "LIFETIME", price: 36, name: "/ lifetime", active: false },
     ]);
 
-    function selectPlanHandler(id: number): void {
+    function selectPlan(id: number): void {
         planArrs.value.map<plan>((item) => {
             item.active = false;
             if (item.id === id) {
@@ -26,14 +26,14 @@
     function onClickOutside(): void {
         alert("To purchase the premium plan, please login first.");
     }
-    function closeHandler(): void {
+    function close(): void {
         emit("close");
     }
 </script>
 
 <template>
     <TransitionRoot as="template">
-        <Dialog as="div" class="relative z-20" @close="closeHandler">
+        <Dialog as="div" class="relative z-20" @close="close">
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -62,7 +62,7 @@
                                 i-carbon-close
                                 class="text-[28px] absolute cursor-pointer top-2 right-2 font-"
                                 aria-hidden="true"
-                                @click="closeHandler"
+                                @click="close"
                             />
                             <div class="text-start">
                                 <DialogTitle as="h2" class="text-[28px] font-bold leading-7 text-gray-900">
@@ -106,7 +106,7 @@
                                         :key="planArr.id"
                                         :style="{ borderColor: `${planArr.active ? '#d57572' : '#8a8a8a'}`, backgroundColor: `${planArr.active ? '#f8e8e7' : '#fff'}` }"
                                         class="shadow-md cursor-pointer flex flex-col items-center rounded-lg py-4 px-2 border-2px w-[30%]"
-                                        @click="selectPlanHandler(planArr.id)"
+                                        @click="selectPlan(planArr.id)"
                                     >
                                         <div>{{ planArr.type }}</div>
                                         <h2 :style="{ color: `${planArr.active ? '#d57572' : '#8a8a8a'}` }" class="text-[34px] font-black">

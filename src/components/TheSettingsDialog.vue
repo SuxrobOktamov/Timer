@@ -1,4 +1,3 @@
-<!-- eslint-disable no-alert -->
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 
@@ -6,14 +5,14 @@
         (event: "close"): void
     }>();
 
-    function handleClose() {
+    function close() {
         emit("close");
     }
 </script>
 
 <template>
     <TransitionRoot as="template">
-        <Dialog as="div" class="relative z-10" @close="handleClose()">
+        <Dialog as="div" class="relative z-10" @close="close">
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -42,20 +41,20 @@
                                 i-carbon-close
                                 class="text-[24px] text-[#575757] absolute cursor-pointer top-2 right-2 font-"
                                 aria-hidden="true"
-                                @click="handleClose()"
+                                @click="close"
                             />
                             <div class="text-start">
                                 <DialogTitle as="h3" class="p-4 border-b text-[16px] font-bold leading-7 text-[#575757]">
                                     Setting
                                 </DialogTitle>
-                                <AppTimerSetting />
-                                <AppTaskSetting />
-                                <AppSoundSetting />
-                                <AppThemeSetting />
-                                <AppNotificationSetting />
-                                <AppIntegrationSetting />
+                                <SettingsDialogTimer />
+                                <SettingsDialogTask />
+                                <SettingsDialogSound />
+                                <SettingsDialogTheme />
+                                <SettingsDialogNotification />
+                                <SettingsDialogIntegration />
                                 <div class="p-5 bg-[#efefef] text-end">
-                                    <button class="bg-[#000] text-white px-4 py-1 shadow-md rounded" @click="handleClose()">
+                                    <button class="bg-[#000] text-white px-4 py-1 shadow-md rounded" @click="close">
                                         Save
                                     </button>
                                 </div>

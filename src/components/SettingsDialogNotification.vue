@@ -2,14 +2,13 @@
     import { BellIcon } from "@heroicons/vue/24/outline";
     import { InformationCircleIcon } from "@heroicons/vue/24/solid";
 
-    const isAlarm = ref<boolean>(false);
+    const alarmShown = ref<boolean>(false);
 
-    function closeAlarmHandler(): void {
-        isAlarm.value = false;
+    function close(): void {
+        alarmShown.value = false;
     }
-
-    function openAlarmHandler(): void {
-        isAlarm.value = true;
+    function open(): void {
+        alarmShown.value = true;
     }
 </script>
 
@@ -17,7 +16,7 @@
     <div class="px-6 pb-4">
         <div class="uppercase mt-[4px] flex items-center gap-1 text-[#bdbdbd] font-bold text-[16px]">
             <BellIcon class="text-[16px] font-bold w-[1.2rem]" />  Notification
-            <MobileAlarmDialog :show="isAlarm" @close="closeAlarmHandler" />
+            <NotificationMobileInfoDialog :show="alarmShown" @close="close" />
         </div>
         <div class="flex items-center justify-between mt-4">
             <span class="flex items-center gap-2">Reminder</span>
@@ -30,7 +29,7 @@
             </div>
         </div>
         <div class="flex items-center justify-between mt-4 border-b border-b-2px pb-10">
-            <span class="flex items-center gap-2">Mobile Alarm <InformationCircleIcon class="w-[1.2rem] text-[#bdbdbd] cursor-pointer" @click="openAlarmHandler" /></span>
+            <span class="flex items-center gap-2">Mobile Alarm <InformationCircleIcon class="w-[1.2rem] text-[#bdbdbd] cursor-pointer" @click="open" /></span>
             <button class="gap-1 flex items-center underline text-[#4f2b2d] px-[16px] py-[10px] text-[14px]">
                 <div i-carbon-add class="font-black pointer-events-none" />
                 <span class="pointer-events-none">Add this device</span>

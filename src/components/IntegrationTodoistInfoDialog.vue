@@ -6,14 +6,14 @@
         (event: "close"): void
     }>();
 
-    function closeHandler(): void {
+    function close(): void {
         emit("close");
     }
 </script>
 
 <template>
     <TransitionRoot as="template">
-        <Dialog as="div" class="relative z-10" @close="closeHandler">
+        <Dialog as="div" class="relative z-10" @close="close">
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -42,55 +42,64 @@
                                 i-carbon-close
                                 class="text-[24px] text-[#575757] absolute cursor-pointer top-2 right-2 font-"
                                 aria-hidden="true"
-                                @click="closeHandler"
+                                @click="close"
                             />
                             <div class="text-start">
                                 <DialogTitle as="p" class="text-start p-4 border-b text-[16px] font-bold leading-7 text-[#575757]">
-                                    How To Use The Mobile Alarm Feature
+                                    How To Use Todoist Integration
                                 </DialogTitle>
                                 <div class="px-6 py-4">
                                     <div class="mb-[18px] text-[#575757] text-[18px]">
-                                        The Mobile Alarm feature allows you to receive alarms on your mobile phone even when the screen is turned off. This feature is essential for using Pomofocus on your phone. (* Currently, the alarm sound is not supported on iOS.)
-                                    </div>
-                                    <div class="mb-[18px] text-[#575757] text-[18px]">
-                                        You can also use this feature as a cross-device alarm, which means you can receive an alarm on your phone when the Pomodoro or break round is finished on your PC.
-                                    </div>
-                                    <div class="mb-[30px] text-[#575757] text-[18px]">
-                                        Here's how to enable this feature:
+                                        With our <a href="https://todoist.com/" target="_blank" class="text-[#db524d] font-black">Todoist</a> integration feature, you can easily import your tasks from Todoist into the Pomofocus app. Here are five key features and how you can use them:
                                     </div>
                                     <div class="mb-[30px] text-[#575757] text-[16px]">
                                         <h2 class="font-black text-[#222] text-[22px] mb-[16px]">
-                                            1. Create an Account on Pomofocus
-                                        </h2>
-                                        <p>First, you need to create an account on Pomofocus. You can do this by clicking the "Log in" button on the top right.</p>
-                                    </div>
-                                    <div class="mb-[30px] text-[#575757] text-[16px]">
-                                        <h2 class="font-black text-[#222] text-[22px] mb-[16px]">
-                                            2. Add Pomofocus to Your Home Screen
+                                            1. How to Import Todoist Tasks
                                         </h2>
                                         <p class="mb-[16px]">
-                                            Next, you need to add Pomofocus to your home screen. This is a one-time setup. To do this, open the Pomofocus app on your mobile phone and then click the "Add to Home Screen" button on your browser.
+                                            To import your Todoist tasks into the Pomofocus app, simply click the "Import from Todoist" button in the task section. If you've already connected your Todoist account, your tasks will appear automatically. If you haven't connected yet, you'll be directed to an authentication page.
                                         </p>
-                                        <img class="w-[20rem] rounded-md shadow-md mb-[16px]" src="/src/assets/images/4.png" alt="alarm">
-                                        <img class="w-[20rem] rounded-md shadow-md" src="/src/assets/images/3.png" alt="alarm">
+                                        <img class="w-[20rem] rounded-md shadow-md mb-[16px]" src="/src/assets/images/import-tasks.png" alt="alarm">
+                                        <p class="mb-[16px]">
+                                            In the task window, you can select the tasks you want to import and then click "Import" to bring them into the Pomofocus app.
+                                        </p>
+                                        <img class="rounded-md shadow-md" src="/src/assets/images/import-tasks2.png" alt="alarm">
                                     </div>
                                     <div class="mb-[30px] text-[#575757] text-[16px]">
                                         <h2 class="font-black text-[#222] text-[22px] mb-[16px]">
-                                            3. Register Your Device in Pomofocus <br> Settings
+                                            2. Check & Uncheck Syncs with Todoist
                                         </h2>
                                         <p class="mb-[16px]">
-                                            Go to the "Settings" page and click the "Add this device" button on the "Mobile Alarm" section. You will see the "Allow Notification" prompt, click "Allow".
+                                            When you import tasks from Todoist into the Pomofocus app, the task state will be automatically synced between the two platforms. This means that if you check a task in Pomofocus, it will also be checked in Todoist and if you uncheck it in Pomofocus, it will also be unchecked in Todoist.
                                         </p>
-                                        <img class="w-[20rem] rounded-md shadow-md mb-[16px]" src="/src/assets/images/5.png" alt="alarm">
+                                        <img class="w-[20rem] rounded-md shadow-md mb-[16px]" src="/src/assets/images/check.png" alt="alarm">
                                     </div>
                                     <div class="mb-[30px] text-[#575757] text-[16px]">
                                         <h2 class="font-black text-[#222] text-[22px] mb-[16px]">
-                                            4. Select the Alarm Type
+                                            3. Set Estimated Pomodoros in Todoist
                                         </h2>
                                         <p class="mb-[16px]">
-                                            You can choose the alarm type between "Pomodoro", "Breaks", "Both", and "None". For example, if you choose "Breaks", you will get an alarm only when a short/long break ends. If you choose "Both", you will get an alarm when both pomodoro and breaks ends.
+                                            You can set the estimated number of Pomodoros for a task in Todoist by adding a number at the end of the task title. The format is not strict, but the following examples in the image works.
                                         </p>
-                                        <img class="w-[20rem] rounded-md shadow-md mb-[16px]" src="/src/assets/images/6.png" alt="alarm">
+                                        <img class="rounded-md shadow-md mb-[16px]" src="/src/assets/images/format.png" alt="alarm">
+                                    </div>
+                                    <div class="mb-[30px] text-[#575757] text-[16px]">
+                                        <h2 class="font-black text-[#222] text-[22px] mb-[16px]">
+                                            4. Set Due Date for Better Sorting
+                                        </h2>
+                                        <p class="mb-[16px]">
+                                            You can set a due date for tasks in Todoist. This due date will be used to sort the tasks when you view them in the Pomofocus app.
+                                        </p>
+                                        <img class="w-[20rem] rounded-md shadow-md mb-[16px]" src="/src/assets/images/duedate.png" alt="alarm">
+                                    </div>
+                                    <div class="mb-[30px] text-[#575757] text-[16px]">
+                                        <h2 class="font-black text-[#222] text-[22px] mb-[16px]">
+                                            5. Write Notes in the Desciprion
+                                        </h2>
+                                        <p class="mb-[16px]">
+                                            The description of tasks in Todoist will be imported as notes in the Pomofocus app.
+                                        </p>
+                                        <img class="rounded-md shadow-md mb-[16px]" src="/src/assets/images/description.png" alt="alarm">
                                     </div>
                                 </div>
                             </div>

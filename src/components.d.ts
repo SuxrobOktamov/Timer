@@ -7,19 +7,22 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AppIntegrationSetting: typeof import('./components/AppIntegrationSetting.vue')['default']
-    AppNotificationSetting: typeof import('./components/AppNotificationSetting.vue')['default']
     AppSoundSetting: typeof import('./components/AppSoundSetting.vue')['default']
     AppTaskSetting: typeof import('./components/AppTaskSetting.vue')['default']
-    AppThemeSetting: typeof import('./components/AppThemeSetting.vue')['default']
-    AppTimerSetting: typeof import('./components/AppTimerSetting.vue')['default']
-    MobileAlarmDialog: typeof import('./components/MobileAlarmDialog.vue')['default']
+    IntegrationTodoistInfoDialog: typeof import('./components/IntegrationTodoistInfoDialog.vue')['default']
+    IntegrationWebhookInfoDialog: typeof import('./components/IntegrationWebhookInfoDialog.vue')['default']
+    NotificationMobileInfoDialog: typeof import('./components/NotificationMobileInfoDialog.vue')['default']
     PremiumDialog: typeof import('./components/PremiumDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SettingsDialogIntegration: typeof import('./components/SettingsDialogIntegration.vue')['default']
+    SettingsDialogNotification: typeof import('./components/SettingsDialogNotification.vue')['default']
+    SettingsDialogSound: typeof import('./components/SettingsDialogSound.vue')['default']
+    SettingsDialogTask: typeof import('./components/SettingsDialogTask.vue')['default']
+    SettingsDialogTheme: typeof import('./components/SettingsDialogTheme.vue')['default']
+    SettingsDialogTimer: typeof import('./components/SettingsDialogTimer.vue')['default']
+    TheFooter: typeof import('./components/TheFooter.vue')['default']
     TheHeader: typeof import('./components/TheHeader.vue')['default']
     TheSettingsDialog: typeof import('./components/TheSettingsDialog.vue')['default']
-    TodoistDialog: typeof import('./components/TodoistDialog.vue')['default']
-    WebhookDialog: typeof import('./components/WebhookDialog.vue')['default']
   }
 }

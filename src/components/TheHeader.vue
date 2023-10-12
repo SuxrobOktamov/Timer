@@ -4,7 +4,7 @@
 
     const settingsShown = ref<boolean>(false);
 
-    function closeSetting(): void {
+    function closeSettings(): void {
         settingsShown.value = false;
     }
 
@@ -31,7 +31,7 @@
             <button class="cursor-pointer flex items-center gap-1 font-sans rounded opacity-90 bg-gray-1/20 py-2 px-3 text-[13px] min-w-[70px] lt-md:min-w-auto" @click="openSettings">
                 <Cog6ToothIcon class="pointer-events-none lt-sm:text-xl w-[1.2rem]" />
                 <span class="lt-sm:hidden capitalize pointer-events-none">Setting</span>
-                <TheSettingsDialog :show="settingsShown" @close="closeSetting" />
+                <TheSettingsDialog :show="settingsShown" @close="closeSettings" />
             </button>
             <router-link to="login">
                 <button class="cursor-pointer flex items-center gap-1 font-sans rounded opacity-90 bg-gray-1/20 py-2 px-3 text-[13px] min-w-[70px] lt-md:min-w-auto">

@@ -6,14 +6,14 @@
         (event: "close"): void
     }>();
 
-    function closeHandler(): void {
+    function close(): void {
         emit("close");
     }
 </script>
 
 <template>
     <TransitionRoot as="template">
-        <Dialog as="div" class="relative z-10" @close="closeHandler">
+        <Dialog as="div" class="relative z-10" @close="close">
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -26,7 +26,7 @@
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </TransitionChild>
 
-            <form class="fixed inset-0 z-10 overflow-y-auto" @submit.prevent>
+            <div class="fixed inset-0 z-10 overflow-y-auto">
                 <div class="relative flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <TransitionChild
                         as="template"
@@ -42,7 +42,7 @@
                                 i-carbon-close
                                 class="text-[24px] text-[#575757] absolute cursor-pointer top-2 right-2 font-"
                                 aria-hidden="true"
-                                @click="closeHandler"
+                                @click="close"
                             />
                             <div class="text-start">
                                 <DialogTitle as="p" class="text-start p-4 border-b text-[16px] font-bold leading-7 text-[#575757]">
@@ -134,7 +134,7 @@
                         </DialogPanel>
                     </TransitionChild>
                 </div>
-            </form>
+            </div>
         </Dialog>
     </TransitionRoot>
 </template>
