@@ -1,4 +1,4 @@
-<!-- <script setup lang="ts"></script>
+<script setup lang="ts"></script>
 
 <template>
     <div class="max-w-[620px] w-full m-auto px-3 py-0 mt-[30px] lt-sm:mt-[10px]">
@@ -113,4 +113,4 @@
             </div>
         </div>
     </footer>
-</template> -->
+</template>

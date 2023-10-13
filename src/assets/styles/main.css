@@ -1,6 +1,9 @@
 @import './markdown.css';
 
-html,
+html {
+  overflow: hidden !important;
+  overflow-y: auto !important;
+},
 body,
 #app {
   height: 100%;
