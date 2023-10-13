@@ -4,6 +4,7 @@
     function close(): void {
         taskDialogShown.value = false;
     }
+
     function open(): void {
         taskDialogShown.value = true;
     }
