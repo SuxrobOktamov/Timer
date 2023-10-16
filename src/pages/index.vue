@@ -1,12 +1,13 @@
 <script setup lang="ts">
     import type { Button } from "../models/button.types";
     import type { Song } from "../models/song.types";
+    import type { Task } from "@/models/task.types";
 
     const PomofocusStore = usePomofocusStore();
-
+    const tasks = ref<Task[]>([]);
     const buttons = ref<Button[]>([
         { name: "Pomodoro", id: 1, active: true, time: 1, color: "#ba4949", spendTime: "Time to focus!" },
-        { name: "Short Break", id: 2, active: false, time: 5, color: "#38858a", spendTime: "Time for a break!" },
+        { name: "Short Break", id: 2, active: false, time: 1, color: "#38858a", spendTime: "Time for a break!" },
         { name: "Long Break", id: 3, active: false, time: 15, color: "#397097", spendTime: "Time for a break!" },
     ]);
     const tickingSongArr = ref<Song[]>([
@@ -34,6 +35,7 @@
     const timerSoundChange = ref<number>(3);
     const startSoundChange = ref<number>(2);
     const finishedPomos = ref<number>(1);
+    const titlePomos = ref<string>();
 
     const startSound = document.createElement("audio");
     const timerSound = document.createElement("audio");
@@ -50,6 +52,21 @@
     const spendTime = computed<string>(() => {
         const focus = buttons.value.find(item => item.active) as Button;
         return focus.spendTime;
+    });
+    const disabled = computed<boolean>(() => {
+        if (!tasks.value.length && buttons.value[0].active) {
+            return true;
+        } else if (buttons.value[0].active) {
+            const disabled = ref<boolean>(false);
+            tasks.value.forEach((item: Task) => {
+                if (item.completed && item.active) {
+                    disabled.value = true;
+                }
+            });
+            return disabled.value;
+        } else {
+            return false;
+        }
     });
 
     function changeButton(id: number, color: string): void {
@@ -98,11 +115,29 @@
         }
     }
     function finishedTasks(): void {
-        if (overTime.value === 0 && second.value === 0) {
+        if (overTime.value === 0 && second.value === 0 && buttons.value[0].active) {
+            if (tasks.value.length === 1) {
+                tasks.value[0].finishedCount++;
+                if (tasks.value[0].finishedCount === tasks.value[0].count) {
+                    tasks.value[0].active = true;
+                }
+            } else {
+                tasks.value.forEach((item: Task) => {
+                    if (item.completed) {
+                        item.finishedCount++;
+                        if (item.finishedCount === item.count) {
+                            item.active = true;
+                        }
+                    }
+                });
+            }
             taskEndSound.play();
             refreshTimer();
             nextTimer();
             finishedPomos.value++;
+        } else if (overTime.value === 0 && second.value === 0) {
+            refreshTimer();
+            nextTimer();
         }
     }
     function refreshTimer(): void {
@@ -113,8 +148,10 @@
         freshStart.value = false;
         second.value = 60;
         overSecond.value = "00";
+        timerSound.pause();
     }
     function nextTimer(): void {
+        freshStart.value = false;
         timerSound.pause();
         refreshTimer();
         if (buttons.value[0].active) {
@@ -156,6 +193,19 @@
             }
         }
     }
+    function timeTitle(title: string): void {
+        titlePomos.value = title;
+    }
+    function deleteTask(id: number): void {
+        tasks.value = tasks.value.filter((item: Task) => item.id !== id);
+    }
+    function clearFinishedTasks(): void {
+        tasks.value = tasks.value.filter((item: Task) => !item.active);
+    }
+    function clearAllTasks(): void {
+        tasks.value = [];
+        finishedPomos.value = 1;
+    }
 
     watch(overSecond, () => {
         finishedTasks();
@@ -182,9 +232,10 @@
             </div>
             <div class="relative w-full text-center flex items-center justify-center">
                 <button
-                    :style="{ color: PomofocusStore.bgColor }"
+                    :style="{ color: PomofocusStore.bgColor, cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? '0.4' : '1' }"
                     :class="isStart ? 'stop' : 'starts'"
-                    class="uppercase lt-sm:w-[170px] lt-sm:h-[45px] lt-sm:text-[20px]"
+                    :disabled="disabled"
+                    class="uppercase border-none lt-sm:w-[170px] lt-sm:h-[45px] lt-sm:text-[20px]"
                     @click="playTimer"
                 >
                     {{ isStart ? 'pause' : 'start' }}
@@ -198,9 +249,16 @@
             #{{ finishedPomos }}
         </div>
         <div class="text-[18px] font-bold text-white">
-            {{ spendTime }}
+            {{ titlePomos ? titlePomos : spendTime }}
         </div>
-        <TheTasks />
+        <TheTasks
+            :refresh-timer="refreshTimer"
+            :tasks="tasks"
+            @time-title="timeTitle"
+            @delete="deleteTask"
+            @finished="clearFinishedTasks"
+            @all="clearAllTasks"
+        />
     </div>
 </template>
 

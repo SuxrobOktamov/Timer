@@ -7,8 +7,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AppSoundSetting: typeof import('./components/AppSoundSetting.vue')['default']
-    AppTaskSetting: typeof import('./components/AppTaskSetting.vue')['default']
     IntegrationTodoistInfoDialog: typeof import('./components/IntegrationTodoistInfoDialog.vue')['default']
     IntegrationWebhookInfoDialog: typeof import('./components/IntegrationWebhookInfoDialog.vue')['default']
     NotificationMobileInfoDialog: typeof import('./components/NotificationMobileInfoDialog.vue')['default']
@@ -21,7 +19,11 @@ declare module '@vue/runtime-core' {
     SettingsDialogTask: typeof import('./components/SettingsDialogTask.vue')['default']
     SettingsDialogTheme: typeof import('./components/SettingsDialogTheme.vue')['default']
     SettingsDialogTimer: typeof import('./components/SettingsDialogTimer.vue')['default']
-    TasksDialog: typeof import('./components/TasksDialog.vue')['default']
+    TaskAdd: typeof import('./components/TaskAdd.vue')['default']
+    TaskAddEdit: typeof import('./components/TaskAddEdit.vue')['default']
+    TaskDialog: typeof import('./components/TaskDialog.vue')['default']
+    TaskEdit: typeof import('./components/TaskEdit.vue')['default']
+    TasksDropDown: typeof import('./components/TasksDropDown.vue')['default']
     TheFooter: typeof import('./components/TheFooter.vue')['default']
     TheHeader: typeof import('./components/TheHeader.vue')['default']
     TheSettingsDialog: typeof import('./components/TheSettingsDialog.vue')['default']

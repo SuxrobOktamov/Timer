@@ -1,4 +1,3 @@
-<!-- eslint-disable no-alert -->
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 

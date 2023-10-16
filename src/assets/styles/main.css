@@ -1,7 +1,7 @@
 @import './markdown.css';
 
 html {
-  overflow: hidden !important;
+  overflow-x: hidden !important;
   overflow-y: auto !important;
 },
 body,
