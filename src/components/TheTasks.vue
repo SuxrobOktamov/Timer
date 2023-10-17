@@ -2,108 +2,88 @@
     import type { PropType } from "vue";
     import type { Task } from "../models/task.types";
     import type { Button } from "../models/button.types";
+    import type { Edit } from "../models/edit.types";
 
-    const prop = defineProps({
+    const props = defineProps({
         refreshTimer: { required: true, type: Function },
         tasks: { required: true, type: Array as PropType<Task[]> },
         buttons: { required: true, type: Array as PropType<Button[]> },
     });
     const emit = defineEmits<{
         (event: "close"): void
-        (event: "timeTitle", type: string): void
         (event: "delete", type: number): void
         (event: "finished"): void
         (event: "all"): void
+        (event: "submit-add-task", type: any): void
     }>();
 
+    const editObj = ref<Edit>({
+        noteShown: true, taskName: "", taskRepeatCount: 0, taskNote: "",
+    });
     const addTaskShown = ref<boolean>(false);
-    const taskId = ref<number>(0);
     const premiumShown = ref<boolean>(false);
     const timeHour = ref<number>(0);
+    const taskId = ref<number>();
 
-    function shownTask(type: "add" | "edit", id?: number): void {
+    function showTask(type: "add" | "edit", id?: number): void {
         if (type === "add") {
             addTaskShown.value = true;
-            prop.tasks.forEach((item: Task) => {
+            props.tasks.forEach((item: Task) => {
                 item.isEdit = true;
             });
         } else {
-            prop.tasks.forEach((item: Task) => {
-                if (id) {
-                    taskId.value = id;
-                }
+            props.tasks.forEach((task: Task) => {
+                taskId.value = id;
                 addTaskShown.value = false;
-                item.isEdit = true;
-                if (item.id === id) {
-                    item.isEdit = false;
+                task.isEdit = true;
+                if (task.id === id) {
+                    task.isEdit = false;
+                    editObj.value.taskName = task.work;
+                    editObj.value.taskRepeatCount = task.count;
+                    editObj.value.taskNote = task.title;
+                    if (task.title?.length) {
+                        editObj.value.noteShown = false;
+                    } else {
+                        editObj.value.noteShown = true;
+                    }
                 }
             });
         }
     }
+
     function close(type: number, id?: number): void {
         if (type === 1) {
             addTaskShown.value = false;
         } else if (type === 2) {
-            prop.tasks.forEach((item: Task) => {
+            props.tasks.forEach((item: Task) => {
                 if (item.id === id) {
                     item.isEdit = true;
                 }
             });
         } else {
             addTaskShown.value = false;
-            prop.tasks.forEach((item: Task) => {
+            props.tasks.forEach((item: Task) => {
                 item.isEdit = true;
             });
         }
     }
+
     function deleteTask(id: number): void {
         emit("delete", id);
     }
+
     function activePomos(id: number): void {
-        prop.refreshTimer();
-        prop.tasks.forEach((item: Task) => {
+        props.refreshTimer();
+        props.tasks.forEach((item: Task) => {
             if (item.id === id) {
                 item.active = !item.active;
             }
         });
     }
-    function closePremium(): void {
-        premiumShown.value = false;
-    }
-    function openPremium(): void {
-        premiumShown.value = true;
-    }
-    function clearFinishedTasks(): void {
-        emit("finished");
-    }
-    function clearAllTasks(): void {
-        emit("all");
-    }
 
-    const taskTitle = computed<string>(() => {
-        if (prop.tasks.length === 1) {
-            return prop.tasks[0].work;
-        } else if (prop.tasks.length > 1) {
-            const filter = ref<Task[]>(prop.tasks.filter((item: Task) => item.completed));
-            if (!filter.value.length) {
-                // eslint-disable-next-line vue/no-mutating-props
-                prop.tasks[0].completed = true;
-                return prop.tasks[0].work;
-            } else {
-                return filter.value[0].work;
-            }
-        } else {
-            return "";
-        }
-    });
-    const filterTasks = computed<Task[]>(() => {
-        return [...prop.tasks].sort((a: Task, b: Task): number => {
-            return a.active > b.active ? 1 : -1;
-        });
-    });
     function completed(id: number): void {
-        prop.refreshTimer();
-        prop.tasks.map<Task>((item) => {
+        props.refreshTimer();
+        props.tasks.map<Task>((item) => {
             item.completed = false;
             if (item.id === id) {
                 item.completed = true;
@@ -111,14 +91,54 @@
             return item;
         });
     }
+
+    function closePremium(): void {
+        premiumShown.value = false;
+    }
+
+    function openPremium(): void {
+        premiumShown.value = true;
+    }
+
+    function clearFinishedTasks(): void {
+        emit("finished");
+    }
+
+    function clearAllTasks(): void {
+        emit("all");
+    }
+
+    function addNote(): void {
+        editObj.value.noteShown = false;
+    }
+
+    function increase(): void {
+        editObj.value.taskRepeatCount++;
+    }
+
+    function decrease(): void {
+        if (editObj.value.taskRepeatCount > 0) {
+            editObj.value.taskRepeatCount--;
+        }
+    }
+    function submitAddTask(type: any): void {
+        emit("submit-add-task", type);
+    }
+
+    const filterTasks = computed<Task[]>(() => {
+        return [...props.tasks].sort((a: Task, b: Task): number => {
+            return a.active > b.active ? 1 : -1;
+        });
+    });
     const finishedPomos = computed<Task[]>(() => {
-        return prop.tasks.filter((item: Task) => item.active);
+        return props.tasks.filter((item: Task) => item.active);
     });
     const pomos = computed<number>(() => {
         let count = 0 as number;
-        prop.tasks.map<Task>((item) => {
+        props.tasks.map<Task>((item) => {
             if (!item.active) {
                 count += item.count;
+                count -= item.finishedCount;
             }
             return item;
         });
@@ -128,39 +148,34 @@
         const today = new Date() as Date;
         const hours = today.getHours() as number;
         const minutes = today.getMinutes() as number;
-        const pomo = Math.floor((minutes + ((prop.buttons[0].time))) / 60) as number;
+        const pomo = Math.floor((minutes + ((props.buttons[0].time))) / 60) as number;
         let date = "" as string;
         if (pomo > 0 && !((hours + pomo) > 24)) {
-            if ((minutes + (pomos.value * prop.buttons[0].time - (pomo * 60)) < 10 && (hours + pomo) < 10)) {
-                date = `0${hours + pomo} : 0${minutes + ((pomos.value * prop.buttons[0].time) - (pomo * 60))}`;
-            } else if ((minutes + (pomos.value * prop.buttons[0].time - (pomo * 60)) > 10 && (hours + pomo) < 10)) {
-                date = `0${hours + pomo} : ${minutes + ((pomos.value * prop.buttons[0].time) - (pomo * 60))}`;
-            } else if ((minutes + (pomos.value * prop.buttons[0].time - (pomo * 60)) < 10 && (hours + pomo) > 10)) {
-                date = `${hours + pomo} : 0${minutes + ((pomos.value * prop.buttons[0].time) - (pomo * 60))}`;
+            if ((minutes + (pomos.value * props.buttons[0].time - (pomo * 60)) < 10 && (hours + pomo) < 10)) {
+                date = `0${hours + pomo} : 0${minutes + ((pomos.value * props.buttons[0].time) - (pomo * 60))}`;
+            } else if ((minutes + (pomos.value * props.buttons[0].time - (pomo * 60)) > 10 && (hours + pomo) < 10)) {
+                date = `0${hours + pomo} : ${minutes + ((pomos.value * props.buttons[0].time) - (pomo * 60))}`;
+            } else if ((minutes + (pomos.value * props.buttons[0].time - (pomo * 60)) < 10 && (hours + pomo) > 10)) {
+                date = `${hours + pomo} : 0${minutes + ((pomos.value * props.buttons[0].time) - (pomo * 60))}`;
             } else {
-                date = `${hours + pomo} : ${minutes + ((pomos.value * prop.buttons[0].time) - (pomo * 60))}`;
+                date = `${hours + pomo} : ${minutes + ((pomos.value * props.buttons[0].time) - (pomo * 60))}`;
             }
         } else if (((hours + pomo) > 24)) {
             date = `00 : 00`;
         } else {
-            if ((minutes + (prop.buttons[0].time * pomos.value)) < 10 && (hours) < 10) {
-                date = `0${hours} : 0${minutes + (prop.buttons[0].time * pomos.value)}`;
+            if ((minutes + (props.buttons[0].time * pomos.value)) < 10 && (hours) < 10) {
+                date = `0${hours} : 0${minutes + (props.buttons[0].time * pomos.value)}`;
             } else
-                if ((minutes + (prop.buttons[0].time * pomos.value)) > 10 && (hours) < 10) {
-                    date = `0${hours} : ${minutes + (prop.buttons[0].time * pomos.value)}`;
-                } else if ((minutes + (prop.buttons[0].time * pomos.value)) < 10 && (hours) > 10) {
-                    date = `${hours} : 0${minutes + (prop.buttons[0].time * pomos.value)}`;
+                if ((minutes + (props.buttons[0].time * pomos.value)) > 10 && (hours) < 10) {
+                    date = `0${hours} : ${minutes + (props.buttons[0].time * pomos.value)}`;
+                } else if ((minutes + (props.buttons[0].time * pomos.value)) < 10 && (hours) > 10) {
+                    date = `${hours} : 0${minutes + (props.buttons[0].time * pomos.value)}`;
                 } else {
-                    date = `${hours} : ${minutes + (prop.buttons[0].time * pomos.value)}`;
+                    date = `${hours} : ${minutes + (props.buttons[0].time * pomos.value)}`;
                 }
         }
-        timeHour.value = (prop.buttons[0].time * pomos.value) / 60;
+        timeHour.value = (props.buttons[0].time * pomos.value) / 60;
         return date;
-    });
-
-    watch(taskTitle, () => {
-        // eslint-disable-next-line vue/custom-event-name-casing
-        emit("timeTitle", taskTitle.value);
     });
 </script>
 
@@ -192,7 +207,7 @@
                         <span class="text-[18px] text-[#bbb] font-bold">{{ task.finishedCount }}/ <small>{{ task.count }}</small></span>
                         <button
                             class="px-[1px] border py-[1px] bg-[#fff] rounded shadow"
-                            @click="shownTask('edit', task.id)"
+                            @click="showTask('edit', task.id)"
                         >
                             <div i-carbon-overflow-menu-vertical class="text-gray-400 font-extrabold text-[24px] pointer-events-none" />
                         </button>
@@ -204,16 +219,20 @@
                 <TaskEdit
                     v-else
                     :tasks="tasks"
+                    :edit-obj="editObj"
                     :task-id="taskId"
                     @close="close(2, task.id)"
                     @delete="deleteTask(task.id)"
                     @open="openPremium"
+                    @add-note="addNote"
+                    @increase="increase"
+                    @decrease="decrease"
                 />
             </div>
             <button
                 v-if="!addTaskShown"
                 class="w-full flex text-[18px] cursor-pointer opacity-60 p-4 border-dashed border-2px bg-[#0000001a] rounded-lg items-center justify-center gap-2"
-                @click="shownTask('add')"
+                @click="showTask('add')"
             >
                 <div i-carbon-add-filled />
                 <span>Add Task</span>
@@ -223,6 +242,7 @@
                 :tasks="tasks"
                 @close="close(1)"
                 @open="openPremium"
+                @submit-add-task="submitAddTask"
             />
             <div v-show="tasks.length" class="flex items-center justify-center gap-5 m-auto mb-3 mt-7 max-w-[480px] w-full border-t border-[#eee] shadow-md py-6 bg-[#ffffff1a]">
                 <div class="text-[#ffffffb3]">

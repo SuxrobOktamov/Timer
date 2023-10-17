@@ -1,16 +1,17 @@
 <script setup lang="ts">
-    import type { PropType } from "vue";
-    import type { Task } from "@/models/task.types";
+    // import type { PropType } from "vue";
+    // import type { Task } from "@/models/task.types";
 
-    const prop = defineProps({ tasks: { required: false, type: Array as PropType<Task[]> } });
+    // const props = defineProps({ tasks: { required: false, type: Array as PropType<Task[]> } });
     const emit = defineEmits<{
         (event: "close"): void
         (event: "open"): void
+        (event: "submit-add-task", obj: { taskName: string; taskRepeatCount: number; taskNote: string | undefined }): void
     }>();
 
     const noteShown = ref<boolean>(true);
-    const youWork = ref<string>();
-    const taskRepeat = ref<number>(0);
+    const taskName = ref<string>();
+    const taskRepeatCount = ref<number>(0);
     const taskNote = ref<string>();
 
     function addNote(): void {
@@ -18,9 +19,9 @@
     }
     function changeTaskRepeatCount(type: "increase" | "decrease"): void {
         if (type === "increase") {
-            taskRepeat.value++;
-        } else if (type === "decrease" && taskRepeat.value > 0) {
-            taskRepeat.value--;
+            taskRepeatCount.value++;
+        } else if (type === "decrease" && taskRepeatCount.value > 0) {
+            taskRepeatCount.value--;
         }
     }
     function closeOrDelete(type: "close" | "delete"): void {
@@ -30,15 +31,12 @@
             emit("close");
         }
     }
-    function shownPremium(): void {
+    function showPremium(): void {
         emit("open");
     }
     function submitAddTask(): void {
-        if (youWork.value?.length && taskRepeat.value) {
-            // eslint-disable-next-line vue/no-mutating-props
-            prop.tasks?.push(
-                { id: Date.now(), work: youWork.value, title: taskNote.value, count: taskRepeat.value, finishedCount: 0, active: false, isEdit: true, completed: false },
-            );
+        if (taskName.value?.length && taskRepeatCount.value) {
+            emit("submit-add-task", { taskName: taskName.value, taskRepeatCount: taskRepeatCount.value, taskNote: taskNote.value });
             emit("close");
         }
     }
@@ -47,7 +45,7 @@
 <template>
     <div class="bg-white rounded-lg shadow-md pt-5 overflow-hidden">
         <input
-            v-model="youWork"
+            v-model="taskName"
             class="pl-5 pr-5 w-full rounded text-[22px] border-none text-[#555] box-border font-bold outline-none"
             type="text"
             placeholder="What are you working on?"
@@ -55,7 +53,7 @@
         <div class="pl-5 pr-5 text-[#555] w-full text-start mt-5 flex flex-wrap items-end gap-1">
             <span class="w-full block pb-2 font-bold">Est Pomodoros</span>
             <input
-                v-model="taskRepeat"
+                v-model="taskRepeatCount"
                 type="number"
                 min="0"
                 class="mr-3 rounded bg-[#efefef] text-[16px] p-[10px] border-none text-[#555] box-border font-bold w-[75px] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -89,7 +87,7 @@
             />
             <button
                 class="underline flex gap-1 items-center text-center rounded opacity-90 text-[14px] font-bold text-[#0006]"
-                @click="shownPremium"
+                @click="showPremium"
             >
                 +Add Project
                 <div class="i-carbon-locked text-3" />

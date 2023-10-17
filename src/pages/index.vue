@@ -35,7 +35,6 @@
     const timerSoundChange = ref<number>(3);
     const startSoundChange = ref<number>(2);
     const finishedPomos = ref<number>(1);
-    const titlePomos = ref<string>();
 
     const startSound = document.createElement("audio");
     const timerSound = document.createElement("audio");
@@ -75,6 +74,21 @@
             return false;
         }
     });
+    const titlePomos = computed<string>(() => {
+        if (tasks.value.length === 1) {
+            return tasks.value[0].work;
+        } else if (tasks.value.length > 1) {
+            const filter = ref<Task[]>(tasks.value.filter((item: Task) => item.completed));
+            if (!filter.value.length) {
+                tasks.value[0].completed = true;
+                return tasks.value[0].work;
+            } else {
+                return filter.value[0].work;
+            }
+        } else {
+            return "";
+        }
+    });
 
     function changeButton(id: number, color: string): void {
         PomofocusStore.bgColor = color;
@@ -89,6 +103,7 @@
             return item;
         });
     }
+
     function startTimer(): void {
         isStart.value = !isStart.value;
         if (isStart.value) {
@@ -121,6 +136,7 @@
             clearInterval(updateSecond.value);
         }
     }
+
     function finishedTasks(): void {
         if (overTime.value === 0 && second.value === 0 && buttons.value[0].active) {
             if (tasks.value.length === 1) {
@@ -147,6 +163,7 @@
             nextTimer();
         }
     }
+
     function refreshTimer(): void {
         borderW.value = 0;
         clearInterval(updateMinute.value);
@@ -157,6 +174,7 @@
         overSecond.value = "00";
         timerSound.pause();
     }
+
     function nextTimer(): void {
         freshStart.value = false;
         timerSound.pause();
@@ -175,11 +193,13 @@
             PomofocusStore.bgColor = buttons.value[0].color;
         }
     }
+
     function playTimer(): void {
         startTimer();
         loadSong();
         playSong();
     }
+
     function loadSong(): void {
         startSound.src = "/src/assets/audio/start-13691.mp3";
         startSound.load();
@@ -188,6 +208,7 @@
         taskEndSound.src = alarmSongArr.value[startSoundChange.value].path as string;
         taskEndSound.load();
     }
+
     function playSong(): void {
         startSound.play();
         if (!isStart.value) {
@@ -200,18 +221,24 @@
             }
         }
     }
-    function timeTitle(title: string): void {
-        titlePomos.value = title;
-    }
+
     function deleteTask(id: number): void {
         tasks.value = tasks.value.filter((item: Task) => item.id !== id);
     }
+
     function clearFinishedTasks(): void {
         tasks.value = tasks.value.filter((item: Task) => !item.active);
     }
+
     function clearAllTasks(): void {
         tasks.value = [];
         finishedPomos.value = 1;
+    }
+
+    function submitAddTask(type: any): void {
+        tasks.value.push(
+            { id: Date.now(), work: type.taskName, title: type.taskNote, count: type.taskRepeatCount, finishedCount: 0, active: false, isEdit: true, completed: false },
+        );
     }
 
     watch(overSecond, () => {
@@ -262,10 +289,10 @@
             :refresh-timer="refreshTimer"
             :tasks="tasks"
             :buttons="buttons"
-            @time-title="timeTitle"
             @delete="deleteTask"
             @finished="clearFinishedTasks"
             @all="clearAllTasks"
+            @submit-add-task="submitAddTask"
         />
         <div v-show="showAllTasks" class="fixed z-[9999] bottom-0 w-full left-0 box-border text-center py-5">
             <div class="m-auto flex items-center max-w-[480px] justify-between bg-white text-[black] rounded-6px shadow-2xl shadow-[#666] p-4">

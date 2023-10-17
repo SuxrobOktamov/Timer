@@ -1,43 +1,34 @@
 <script setup lang="ts">
     import type { PropType } from "vue";
     import type { Task } from "@/models/task.types";
+    import type { Edit } from "@/models/edit.types";
 
-    const prop = defineProps({
+    const props = defineProps({
         tasks: { required: true, type: Array as PropType<Task[]> },
-        taskId: { required: true, type: Number },
+        editObj: { required: true, type: Object as PropType<Edit> },
+        taskId: { required: true, type: Number as PropType<number | undefined> },
     });
     const emit = defineEmits<{
         (event: "close"): void
         (event: "delete"): void
         (event: "open"): void
+        (event: "add-note"): void
+        (event: "increase"): void
+        (event: "decrease"): void
     }>();
 
-    const noteShown = ref<boolean>(true);
-    const youWork = ref<string>("");
-    const taskRepeat = ref<number>(0);
-    const taskNote = ref<string>();
+    const taskName = ref<string>(props.editObj.taskName);
+    const taskRepeatCount = ref<number>(props.editObj.taskRepeatCount);
+    const taskNote = ref<string | undefined>(props.editObj.taskNote);
 
-    function editTask(): void {
-        prop.tasks.forEach((task: Task) => {
-            if (task.id === prop.taskId) {
-                youWork.value = task.work;
-                taskRepeat.value = task.count;
-                taskNote.value = task.title;
-            }
-            if (task.title?.length) {
-                noteShown.value = false;
-            }
-        });
-    }
     function addNote(): void {
-        noteShown.value = false;
+        emit("add-note");
     }
-    function changeTaskRepeatCount(type: "increase" | "decrease"): void {
-        if (type === "increase") {
-            taskRepeat.value++;
-        } else if (type === "decrease" && taskRepeat.value > 0) {
-            taskRepeat.value--;
-        }
+    function increase(): void {
+        emit("increase");
+    }
+    function decrease(): void {
+        emit("decrease");
     }
     function closeOrDelete(type: "close" | "delete"): void {
         if (type === "close") {
@@ -50,29 +41,23 @@
         emit("open");
     }
     function submitEditTask(): void {
-        if (youWork.value?.length && taskRepeat.value) {
-            prop.tasks.forEach((task: Task) => {
-                if (task.id === prop.taskId) {
-                    task.work = youWork.value;
+        if (taskName.value?.length && taskRepeatCount.value) {
+            props.tasks.forEach((task: Task) => {
+                if (task.id === props.taskId) {
+                    task.work = taskName.value;
                     task.title = taskNote.value;
-                    task.count = taskRepeat.value;
+                    task.count = taskRepeatCount.value;
                 }
                 task.isEdit = true;
             });
         }
     }
-
-    watchEffect(() => {
-        // eslint-disable-next-line no-unused-expressions
-        prop.taskId;
-        editTask();
-    });
 </script>
 
 <template>
     <div class="bg-white rounded-lg shadow-md pt-5 overflow-hidden">
         <input
-            v-model="youWork"
+            v-model="taskName"
             class="pl-5 pr-5 w-full rounded text-[22px] border-none text-[#555] box-border font-bold outline-none"
             type="text"
             placeholder="What are you working on?"
@@ -80,27 +65,27 @@
         <div class="pl-5 pr-5 text-[#555] w-full text-start mt-5 flex flex-wrap items-end gap-1">
             <span class="w-full block pb-2 font-bold">Est Pomodoros</span>
             <input
-                v-model="taskRepeat"
+                v-model="taskRepeatCount"
                 type="number"
                 min="0"
                 class="mr-3 rounded bg-[#efefef] text-[16px] p-[10px] border-none text-[#555] box-border font-bold w-[75px] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             >
             <button
                 class="shadow-md text-center rounded cursor-pointer text-[14px] px-3 py-2 inline-block w-[40px] bg-white text-[#555] border border-[#dfdfdf]"
-                @click="changeTaskRepeatCount('decrease')"
+                @click="decrease()"
             >
                 <div class="i-carbon-caret-down text-black opacity-60 pointer-events-none" />
             </button>
             <button
                 class="shadow-md text-center rounded cursor-pointer text-[14px] px-3 py-2 inline-block w-[40px] bg-white text-[#555] border border-[#dfdfdf]"
-                @click="changeTaskRepeatCount('increase')"
+                @click="increase()"
             >
                 <div class="i-carbon-caret-up text-black opacity-60 pointer-events-none" />
             </button>
         </div>
         <div class="pl-5 pr-5 flex pt-4 gap-3 flex-wrap">
             <button
-                v-if="noteShown"
+                v-if="editObj.noteShown"
                 class="underline text-center rounded opacity-90 text-[14px] font-bold text-[#0006]"
                 @click="addNote()"
             >
