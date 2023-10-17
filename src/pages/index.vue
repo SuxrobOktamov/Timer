@@ -68,6 +68,13 @@
             return false;
         }
     });
+    const showAllTasks = computed<boolean>(() => {
+        if (tasks.value.length) {
+            return tasks.value.every((item: Task) => item.active);
+        } else {
+            return false;
+        }
+    });
 
     function changeButton(id: number, color: string): void {
         PomofocusStore.bgColor = color;
@@ -254,11 +261,23 @@
         <TheTasks
             :refresh-timer="refreshTimer"
             :tasks="tasks"
+            :buttons="buttons"
             @time-title="timeTitle"
             @delete="deleteTask"
             @finished="clearFinishedTasks"
             @all="clearAllTasks"
         />
+        <div v-show="showAllTasks" class="fixed z-[9999] bottom-0 w-full left-0 box-border text-center py-5">
+            <div class="m-auto flex items-center max-w-[480px] justify-between bg-white text-[black] rounded-6px shadow-2xl shadow-[#666] p-4">
+                <p>You've finished all your tasks for today 🎉</p>
+                <button
+                    class="px-3 py-2 text-[12px] rounded shadow-lg text-white bg-[#379580]"
+                    @click="clearAllTasks()"
+                >
+                    Clear Tasks
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
