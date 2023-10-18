@@ -1,8 +1,8 @@
 <script setup lang="ts">
     const emit = defineEmits<{
-        (event: "close"): void
+        (event: "cancel"): void
         (event: "open"): void
-        (event: "submit-add-task", obj: { taskName: string; taskRepeatCount: number; taskNote: string | undefined }): void
+        (event: "submit", obj: { taskName: string; taskRepeatCount: number; taskNote: string | undefined; type: string }): void
     }>();
 
     const noteShown = ref<boolean>(true);
@@ -24,18 +24,18 @@
         }
     }
 
-    function close(): void {
-        emit("close");
+    function onCancel(): void {
+        emit("cancel");
     }
 
     function showPremium(): void {
         emit("open");
     }
 
-    function submitAddTask(): void {
+    function onSubmit(): void {
         if (taskName.value?.length && taskRepeatCount.value) {
-            emit("submit-add-task", { taskName: taskName.value, taskRepeatCount: taskRepeatCount.value, taskNote: taskNote.value });
-            emit("close");
+            emit("submit", { taskName: taskName.value, taskRepeatCount: taskRepeatCount.value, taskNote: taskNote.value, type: "add" });
+            emit("cancel");
         }
     }
 </script>
@@ -95,14 +95,14 @@
             <div class="flex items-center gap-2 w-full justify-end">
                 <button
                     class="min-w-[70px] text-[#888] font-bold text-[12px] opacity-90 text-center px-3 py-2"
-                    @click="close()"
+                    @click="onCancel()"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
                     class="shadow-md min-w-[70px] text-[#fff] inline-block rounded bg-[#222] font-bold text-[12px] text-center px-3 py-2"
-                    @click="submitAddTask"
+                    @click="onSubmit"
                 >
                     Save
                 </button>

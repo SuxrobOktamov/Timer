@@ -1,20 +1,18 @@
 <script setup lang="ts">
-    import type { PropType } from "vue";
     import type { Task } from "@/models/task.types";
     import type { Edit } from "@/models/edit.types";
 
-    const props = defineProps({
-        tasks: { required: true, type: Array as PropType<Task[]> },
-        editObj: { required: true, type: Object as PropType<Edit> },
-        taskId: { required: true, type: Number as PropType<number | undefined> },
-    });
+    const props = defineProps<{
+        tasks: Task[]
+        editObj: Edit
+        taskId: number | undefined
+    }>();
     const emit = defineEmits<{
-        (event: "close"): void
+        (event: "cancel"): void
         (event: "delete"): void
         (event: "open"): void
         (event: "add-note"): void
-        (event: "increase"): void
-        (event: "decrease"): void
+        (event: "submit", obj: { taskName: string; taskRepeatCount: number; taskNote: string | undefined; type: string; id?: number }): void
     }>();
 
     const taskName = ref<string>(props.editObj.taskName);
@@ -26,35 +24,29 @@
     }
 
     function increase(): void {
-        emit("increase");
+        taskRepeatCount.value++;
     }
 
     function decrease(): void {
-        emit("decrease");
+        if (taskRepeatCount.value > 0) {
+            taskRepeatCount.value--;
+        }
     }
 
-    function closeOrDelete(type: "close" | "delete"): void {
-        if (type === "close") {
-            emit("close");
-        } else {
-            emit("delete");
-        }
+    function onCancel(): void {
+        emit("cancel");
+    }
+    function onDelete(): void {
+        emit("delete");
     }
 
     function shownPremium(): void {
         emit("open");
     }
 
-    function submitEditTask(): void {
+    function onSubmit(): void {
         if (taskName.value?.length && taskRepeatCount.value) {
-            props.tasks.forEach((task: Task) => {
-                if (task.id === props.taskId) {
-                    task.work = taskName.value;
-                    task.title = taskNote.value;
-                    task.count = taskRepeatCount.value;
-                }
-                task.isEdit = true;
-            });
+            emit("submit", { taskName: taskName.value, taskRepeatCount: taskRepeatCount.value, taskNote: taskNote.value, id: props.taskId, type: "edit" });
         }
     }
 </script>
@@ -113,21 +105,21 @@
         <div class="mt-5 w-full p-4 bg-[#efefef] flex items-center gap-2 justify-between">
             <button
                 class="min-w-[70px] text-[#888] font-bold text-[12px] opacity-90 text-center px-3 py-2"
-                @click="closeOrDelete('delete')"
+                @click="onDelete()"
             >
                 Delete
             </button>
             <div class="flex items-center gap-2 w-full justify-end">
                 <button
                     class="min-w-[70px] text-[#888] font-bold text-[12px] opacity-90 text-center px-3 py-2"
-                    @click="closeOrDelete('close')"
+                    @click="onCancel()"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
                     class="shadow-md min-w-[70px] text-[#fff] inline-block rounded bg-[#222] font-bold text-[12px] text-center px-3 py-2"
-                    @click="submitEditTask"
+                    @click="onSubmit"
                 >
                     Save
                 </button>

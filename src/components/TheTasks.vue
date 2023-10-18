@@ -1,20 +1,19 @@
 <script setup lang="ts">
-    import type { PropType } from "vue";
     import type { Task } from "../models/task.types";
     import type { Button } from "../models/button.types";
     import type { Edit } from "../models/edit.types";
 
-    const props = defineProps({
-        refreshTimer: { required: true, type: Function },
-        tasks: { required: true, type: Array as PropType<Task[]> },
-        buttons: { required: true, type: Array as PropType<Button[]> },
-    });
+    const props = defineProps<{
+        refreshTimer: Function
+        tasks: Task[]
+        buttons: Button[]
+    }>();
     const emit = defineEmits<{
         (event: "close"): void
         (event: "delete", type: number): void
-        (event: "finished"): void
-        (event: "all"): void
-        (event: "submit-add-task", type: any): void
+        (event: "clear-finished-tasks"): void
+        (event: "clear-all-tasks"): void
+        (event: "submit", type: any): void
     }>();
 
     const editObj = ref<Edit>({
@@ -51,7 +50,7 @@
         }
     }
 
-    function close(type: number, id?: number): void {
+    function onCancel(type: number, id?: number): void {
         if (type === 1) {
             addTaskShown.value = false;
         } else if (type === 2) {
@@ -101,11 +100,11 @@
     }
 
     function clearFinishedTasks(): void {
-        emit("finished");
+        emit("clear-finished-tasks");
     }
 
     function clearAllTasks(): void {
-        emit("all");
+        emit("clear-all-tasks");
     }
 
     function addNote(): void {
@@ -121,8 +120,8 @@
             editObj.value.taskRepeatCount--;
         }
     }
-    function submitAddTask(type: any): void {
-        emit("submit-add-task", type);
+    function onSubmit(obj: any): void {
+        emit("submit", obj);
     }
 
     const filterTasks = computed<Task[]>(() => {
@@ -180,7 +179,7 @@
 </script>
 
 <template>
-    <form class="w-full" @submit.prevent @click.self="close(3)">
+    <form class="w-full" @submit.prevent @click.self="onCancel(3)">
         <div class="m-auto max-w-[480px] w-full mt-5 relative">
             <div class="relative flex items-center justify-between mb-5 pb-[14px] border-w-[2px] border-b-2px border-b-[#fff9]">
                 <span class="text-[18px] font-bold tracking-widest">Task</span>
@@ -221,12 +220,13 @@
                     :tasks="tasks"
                     :edit-obj="editObj"
                     :task-id="taskId"
-                    @close="close(2, task.id)"
+                    @cancel="onCancel(2, task.id)"
                     @delete="deleteTask(task.id)"
                     @open="openPremium"
                     @add-note="addNote"
                     @increase="increase"
                     @decrease="decrease"
+                    @submit="onSubmit"
                 />
             </div>
             <button
@@ -240,9 +240,9 @@
             <TaskAdd
                 v-else
                 :tasks="tasks"
-                @close="close(1)"
+                @cancel="onCancel(1)"
                 @open="openPremium"
-                @submit-add-task="submitAddTask"
+                @submit="onSubmit"
             />
             <div v-show="tasks.length" class="flex items-center justify-center gap-5 m-auto mb-3 mt-7 max-w-[480px] w-full border-t border-[#eee] shadow-md py-6 bg-[#ffffff1a]">
                 <div class="text-[#ffffffb3]">

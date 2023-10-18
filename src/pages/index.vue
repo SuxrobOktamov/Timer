@@ -235,10 +235,21 @@
         finishedPomos.value = 1;
     }
 
-    function submitAddTask(type: any): void {
-        tasks.value.push(
-            { id: Date.now(), work: type.taskName, title: type.taskNote, count: type.taskRepeatCount, finishedCount: 0, active: false, isEdit: true, completed: false },
-        );
+    function onSubmit(obj: any): void {
+        if (obj.type === "add") {
+            tasks.value.push(
+                { id: Date.now(), work: obj.taskName, title: obj.taskNote, count: obj.taskRepeatCount, finishedCount: 0, active: false, isEdit: true, completed: false },
+            );
+        } else {
+            tasks.value.forEach((task: Task) => {
+                if (task.id === obj?.id) {
+                    task.work = obj.taskName;
+                    task.title = obj.taskNote;
+                    task.count = obj.taskRepeatCount;
+                }
+                task.isEdit = true;
+            });
+        }
     }
 
     watch(overSecond, () => {
@@ -290,9 +301,9 @@
             :tasks="tasks"
             :buttons="buttons"
             @delete="deleteTask"
-            @finished="clearFinishedTasks"
-            @all="clearAllTasks"
-            @submit-add-task="submitAddTask"
+            @clear-finished-tasks="clearFinishedTasks"
+            @clear-all-tasks="clearAllTasks"
+            @submit="onSubmit"
         />
         <div v-show="showAllTasks" class="fixed z-[9999] bottom-0 w-full left-0 box-border text-center py-5">
             <div class="m-auto flex items-center max-w-[480px] justify-between bg-white text-[black] rounded-6px shadow-2xl shadow-[#666] p-4">
