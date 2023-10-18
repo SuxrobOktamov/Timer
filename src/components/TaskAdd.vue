@@ -14,20 +14,18 @@
         noteShown.value = false;
     }
 
-    function changeTaskRepeatCount(type: "increase" | "decrease"): void {
-        if (type === "increase") {
-            taskRepeatCount.value++;
-        } else if (type === "decrease" && taskRepeatCount.value > 0) {
+    function increase(): void {
+        taskRepeatCount.value++;
+    }
+
+    function decrease(): void {
+        if (taskRepeatCount.value > 0) {
             taskRepeatCount.value--;
         }
     }
 
-    function closeOrDelete(type: "close" | "delete"): void {
-        if (type === "close") {
-            emit("close");
-        } else {
-            emit("close");
-        }
+    function close(): void {
+        emit("close");
     }
 
     function showPremium(): void {
@@ -60,13 +58,13 @@
             >
             <button
                 class="shadow-md text-center rounded cursor-pointer text-[14px] px-3 py-2 inline-block w-[40px] bg-white text-[#555] border border-[#dfdfdf]"
-                @click="changeTaskRepeatCount('decrease')"
+                @click="decrease()"
             >
                 <div class="i-carbon-caret-down text-black opacity-60 pointer-events-none" />
             </button>
             <button
                 class="shadow-md text-center rounded cursor-pointer text-[14px] px-3 py-2 inline-block w-[40px] bg-white text-[#555] border border-[#dfdfdf]"
-                @click="changeTaskRepeatCount('increase')"
+                @click="increase()"
             >
                 <div class="i-carbon-caret-up text-black opacity-60 pointer-events-none" />
             </button>
@@ -97,7 +95,7 @@
             <div class="flex items-center gap-2 w-full justify-end">
                 <button
                     class="min-w-[70px] text-[#888] font-bold text-[12px] opacity-90 text-center px-3 py-2"
-                    @click="closeOrDelete('close')"
+                    @click="close()"
                 >
                     Cancel
                 </button>
