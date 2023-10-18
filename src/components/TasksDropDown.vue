@@ -10,14 +10,16 @@
     function clearFinishedTasks(): void {
         emit("finished");
     }
+
     function clearAllTasks(): void {
         emit("all");
     }
+
     function login(): void {
         // eslint-disable-next-line no-alert
         alert("Please login to use the template feature.");
     }
-  </script>
+</script>
 
 <template>
     <Menu as="div" class="relative inline-block text-left">

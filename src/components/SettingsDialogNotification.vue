@@ -7,6 +7,7 @@
     function close(): void {
         alarmShown.value = false;
     }
+
     function open(): void {
         alarmShown.value = true;
     }

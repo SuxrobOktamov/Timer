@@ -24,12 +24,15 @@
     function addNote(): void {
         emit("add-note");
     }
+
     function increase(): void {
         emit("increase");
     }
+
     function decrease(): void {
         emit("decrease");
     }
+
     function closeOrDelete(type: "close" | "delete"): void {
         if (type === "close") {
             emit("close");
@@ -37,9 +40,11 @@
             emit("delete");
         }
     }
+
     function shownPremium(): void {
         emit("open");
     }
+
     function submitEditTask(): void {
         if (taskName.value?.length && taskRepeatCount.value) {
             props.tasks.forEach((task: Task) => {

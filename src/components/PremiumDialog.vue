@@ -23,9 +23,11 @@
             return item;
         });
     }
+
     function onClickOutside(): void {
         alert("To purchase the premium plan, please login first.");
     }
+
     function close(): void {
         emit("close");
     }

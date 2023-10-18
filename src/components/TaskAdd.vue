@@ -1,8 +1,4 @@
 <script setup lang="ts">
-    // import type { PropType } from "vue";
-    // import type { Task } from "@/models/task.types";
-
-    // const props = defineProps({ tasks: { required: false, type: Array as PropType<Task[]> } });
     const emit = defineEmits<{
         (event: "close"): void
         (event: "open"): void
@@ -17,6 +13,7 @@
     function addNote(): void {
         noteShown.value = false;
     }
+
     function changeTaskRepeatCount(type: "increase" | "decrease"): void {
         if (type === "increase") {
             taskRepeatCount.value++;
@@ -24,6 +21,7 @@
             taskRepeatCount.value--;
         }
     }
+
     function closeOrDelete(type: "close" | "delete"): void {
         if (type === "close") {
             emit("close");
@@ -31,9 +29,11 @@
             emit("close");
         }
     }
+
     function showPremium(): void {
         emit("open");
     }
+
     function submitAddTask(): void {
         if (taskName.value?.length && taskRepeatCount.value) {
             emit("submit-add-task", { taskName: taskName.value, taskRepeatCount: taskRepeatCount.value, taskNote: taskNote.value });
