@@ -1,21 +1,11 @@
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
     const PomofocusStore = usePomofocusStore();
-    function changeColor(id: number): void {
-        PomofocusStore.ColorArrs[PomofocusStore.countColor].obj.map((item) => {
-            item.active = false;
-            if (id === item.id) {
-                item.active = true;
-            }
-            return item;
-        });
-        PomofocusStore.shownColorsDialog = false;
-    }
 </script>
 
 <template>
     <TransitionRoot as="template" :show="PomofocusStore.shownColorsDialog">
-        <Dialog as="div" class="relative z-10" @close="PomofocusStore.shownColorsDialog = false">
+        <Dialog as="div" class="relative z-10" @close="PomofocusStore.colorsDialogClose()">
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -50,7 +40,7 @@
                                         :key="ColorArr.id"
                                         :style="{ backgroundColor: ColorArr.color }"
                                         class="cursor-pointer w-14 h-14 rounded-lg flex items-center justify-center"
-                                        @click="changeColor(ColorArr.id)"
+                                        @click="PomofocusStore.changeColor(ColorArr.id)"
                                     >
                                         <div v-show="ColorArr.active" i-carbon-checkmark class="text-white text-[20px] font-black" />
                                     </div>

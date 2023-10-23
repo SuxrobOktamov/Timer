@@ -46,35 +46,14 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         },
     ]);
 
-    const colorOne = computed<string>(() => {
-        let color = "" as string;
-        ColorArrs.value[0].obj.map((item) => {
-            if (item.active) {
-                color = item.color;
-            }
-            return item;
-        });
-        return color;
+    const colorOne = computed<any>(() => {
+        return ColorArrs.value[0].obj.find(item => item.active)?.color;
     });
-    const colorTwo = computed<string>(() => {
-        let color = "" as string;
-        ColorArrs.value[1].obj.map((item) => {
-            if (item.active) {
-                color = item.color;
-            }
-            return item;
-        });
-        return color;
+    const colorTwo = computed<any>(() => {
+        return ColorArrs.value[1].obj.find(item => item.active)?.color;
     });
-    const colorThree = computed<string>(() => {
-        let color = "" as string;
-        ColorArrs.value[2].obj.map((item) => {
-            if (item.active) {
-                color = item.color;
-            }
-            return item;
-        });
-        return color;
+    const colorThree = computed<any>(() => {
+        return ColorArrs.value[2].obj.find(item => item.active)?.color;
     });
 
     const buttons = ref<Button[]>([
@@ -119,6 +98,21 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         taskEndSound.load();
     }
 
+    function changeColor(id: number): void {
+        ColorArrs.value[countColor.value].obj.map((item) => {
+            item.active = false;
+            if (id === item.id) {
+                item.active = true;
+            }
+            return item;
+        });
+        shownColorsDialog.value = false;
+    }
+
+    function colorsDialogClose(): void {
+        shownColorsDialog.value = false;
+    }
+
     watchEffect(() => {
         if (buttons.value[0].active) {
             bgColor.value = colorOne.value;
@@ -153,6 +147,8 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         timerSound,
         taskEndSound,
         startSound,
+        changeColor,
+        colorsDialogClose,
     };
 });
 
