@@ -1,29 +1,15 @@
 <script setup lang="ts">
     import type { Button } from "../models/button.types";
-    import type { Song } from "../models/song.types";
     import type { Task } from "@/models/task.types";
+    import type { SettingTimer } from "@/models/settingTimer.types";
 
     const PomofocusStore = usePomofocusStore();
+
+    // const startSound = document.createElement("audio");
+    // const timerSound = document.createElement("audio");
+    // const taskEndSound = document.createElement("audio");
+
     const tasks = ref<Task[]>([]);
-    const buttons = ref<Button[]>([
-        { name: "Pomodoro", id: 1, active: true, time: 1, color: "#ba4949", spendTime: "Time to focus!" },
-        { name: "Short Break", id: 2, active: false, time: 1, color: "#38858a", spendTime: "Time for a break!" },
-        { name: "Long Break", id: 3, active: false, time: 15, color: "#397097", spendTime: "Time for a break!" },
-    ]);
-    const tickingSongArr = ref<Song[]>([
-        { path: "", id: 0, name: "None" },
-        { path: "/src/assets/audio/tickingSong/Ticking_fast.mp3", id: 1, name: "Ticking Fast" },
-        { path: "/src/assets/audio/tickingSong/ticking_slow.mp3", id: 2, name: "Ticking Slow" },
-        { path: "/src/assets/audio/tickingSong/white_noise.mp3", id: 3, name: "White Noise" },
-        { path: "/src/assets/audio/tickingSong/brown_noise.mp3", id: 4, name: "Brown Noise" },
-    ]);
-    const alarmSongArr = ref<Song[]>([
-        { path: "/src/assets/audio/alarmSong/bell.mp3", id: 0, name: "Bell" },
-        { path: "/src/assets/audio/alarmSong/bird.mp3", id: 1, name: "Bird" },
-        { path: "/src/assets/audio/alarmSong/digital.mp3", id: 2, name: "Digital" },
-        { path: "/src/assets/audio/alarmSong/kitchen.mp3", id: 3, name: "Kitchen" },
-        { path: "/src/assets/audio/alarmSong/wood.mp3", id: 4, name: "Wood" },
-    ]);
 
     const borderW = ref<number>(0);
     const overSecond = ref<string>("00");
@@ -32,16 +18,12 @@
     const updateMinute = ref<any>();
     const updateSecond = ref<any>();
     const freshStart = ref<boolean>(false);
-    const timerSoundChange = ref<number>(3);
-    const startSoundChange = ref<number>(2);
     const finishedPomos = ref<number>(1);
-
-    const startSound = document.createElement("audio");
-    const timerSound = document.createElement("audio");
-    const taskEndSound = document.createElement("audio");
+    const isStartPomodoros = ref<boolean>(false);
+    const isStartBreaks = ref<boolean>(false);
 
     const overTime = computed<number>(() => {
-        const time = buttons.value.find(item => item.active) as Button;
+        const time = PomofocusStore.buttons.find(item => item.active) as Button;
         if (freshStart.value) {
             return time.time - 1;
         } else {
@@ -49,13 +31,13 @@
         }
     });
     const spendTime = computed<string>(() => {
-        const focus = buttons.value.find(item => item.active) as Button;
+        const focus = PomofocusStore.buttons.find(item => item.active) as Button;
         return focus.spendTime;
     });
     const disabled = computed<boolean>(() => {
-        if (!tasks.value.length && buttons.value[0].active) {
+        if (!tasks.value.length && PomofocusStore.buttons[0].active) {
             return true;
-        } else if (buttons.value[0].active) {
+        } else if (PomofocusStore.buttons[0].active) {
             const disabled = ref<boolean>(false);
             tasks.value.forEach((item: Task) => {
                 if (item.completed && item.active) {
@@ -90,10 +72,9 @@
         }
     });
 
-    function changeButton(id: number, color: string): void {
-        PomofocusStore.bgColor = color;
-        timerSound.pause();
-        buttons.value.map<Button>((item) => {
+    function changeButton(id: number): void {
+        PomofocusStore.timerSound.pause();
+        PomofocusStore.buttons.map<Button>((item) => {
             if (item.id === id) {
                 item.active = true;
                 refreshTimer();
@@ -125,7 +106,7 @@
                 }, 1000);
             }
             updateMinute.value = setInterval(() => {
-                buttons.value.forEach((item: Button) => {
+                PomofocusStore.buttons.forEach((item: Button) => {
                     if (item.active) {
                         item.time--;
                     }
@@ -135,10 +116,19 @@
             clearInterval(updateMinute.value);
             clearInterval(updateSecond.value);
         }
+        if (isStart.value && PomofocusStore.runDarking) {
+            PomofocusStore.bgColor = "black";
+        } else {
+            PomofocusStore.buttons.forEach((item: Button) => {
+                if (item.active) {
+                    PomofocusStore.bgColor = item.color;
+                }
+            });
+        }
     }
 
     function finishedTasks(): void {
-        if (overTime.value === 0 && second.value === 0 && buttons.value[0].active) {
+        if (overTime.value === 0 && second.value === 0 && PomofocusStore.buttons[0].active) {
             if (tasks.value.length === 1) {
                 tasks.value[0].finishedCount++;
                 if (tasks.value[0].finishedCount === tasks.value[0].count) {
@@ -154,13 +144,19 @@
                     }
                 });
             }
-            taskEndSound.play();
+            PomofocusStore.taskEndSound.play();
             refreshTimer();
             nextTimer();
             finishedPomos.value++;
+            if (isStartBreaks.value) {
+                playTimer();
+            }
         } else if (overTime.value === 0 && second.value === 0) {
             refreshTimer();
             nextTimer();
+            if (isStartPomodoros.value && !disabled.value) {
+                playTimer();
+            }
         }
     }
 
@@ -172,52 +168,40 @@
         freshStart.value = false;
         second.value = 60;
         overSecond.value = "00";
-        timerSound.pause();
+        PomofocusStore.timerSound.pause();
     }
 
     function nextTimer(): void {
         freshStart.value = false;
-        timerSound.pause();
+        PomofocusStore.timerSound.pause();
         refreshTimer();
-        if (buttons.value[0].active) {
-            buttons.value.forEach((item: Button) => item.active = false);
-            buttons.value[1].active = true;
-            PomofocusStore.bgColor = buttons.value[1].color;
-        } else if (buttons.value[1].active) {
-            buttons.value.forEach((item: Button) => item.active = false);
-            buttons.value[0].active = true;
-            PomofocusStore.bgColor = buttons.value[0].color;
+        if (PomofocusStore.buttons[0].active) {
+            PomofocusStore.buttons.forEach((item: Button) => item.active = false);
+            PomofocusStore.buttons[1].active = true;
+        } else if (PomofocusStore.buttons[1].active) {
+            PomofocusStore.buttons.forEach((item: Button) => item.active = false);
+            PomofocusStore.buttons[0].active = true;
         } else {
-            buttons.value.forEach((item: Button) => item.active = false);
-            buttons.value[0].active = true;
-            PomofocusStore.bgColor = buttons.value[0].color;
+            PomofocusStore.buttons.forEach((item: Button) => item.active = false);
+            PomofocusStore.buttons[0].active = true;
         }
     }
 
     function playTimer(): void {
         startTimer();
-        loadSong();
+        PomofocusStore.loadSong();
         playSong();
     }
 
-    function loadSong(): void {
-        startSound.src = "/src/assets/audio/start-13691.mp3";
-        startSound.load();
-        timerSound.src = tickingSongArr.value[timerSoundChange.value].path as string;
-        timerSound.load();
-        taskEndSound.src = alarmSongArr.value[startSoundChange.value].path as string;
-        taskEndSound.load();
-    }
-
     function playSong(): void {
-        startSound.play();
+        PomofocusStore.startSound.play();
         if (!isStart.value) {
-            timerSound.pause();
-            timerSound.loop = false;
-        } else if (buttons.value[0].active) {
+            PomofocusStore.timerSound.pause();
+            PomofocusStore.timerSound.loop = false;
+        } else if (PomofocusStore.buttons[0].active) {
             if (!(overTime.value === 0 && overSecond.value === "00")) {
-                timerSound.play();
-                timerSound.loop = true;
+                PomofocusStore.timerSound.play();
+                PomofocusStore.timerSound.loop = true;
             }
         }
     }
@@ -252,22 +236,59 @@
         }
     }
 
+    function closeSettings(): void {
+        PomofocusStore.settingsShown = false;
+    }
+
+    function timeSaveChanges(obj: SettingTimer): void {
+        if (obj.breakLongTime && obj.breakShortTime && obj.pomodoroTime) {
+            PomofocusStore.buttons[0].time = obj.pomodoroTime;
+            PomofocusStore.buttons[1].time = obj.breakShortTime;
+            PomofocusStore.buttons[2].time = obj.breakLongTime;
+        }
+    }
+
+    function autoStartPomodoro(): void {
+        isStartPomodoros.value = !isStartPomodoros.value;
+    }
+
+    function autoStartBreaks(): void {
+        isStartBreaks.value = !isStartBreaks.value;
+    }
+
     watch(overSecond, () => {
         finishedTasks();
+        if (PomofocusStore.settingsShown) {
+            refreshTimer();
+            PomofocusStore.buttons.forEach((item: Button) => {
+                if (item.active) {
+                    PomofocusStore.bgColor = item.color;
+                }
+            });
+        }
     });
 </script>
 
 <template>
+    <TheSettingsDialog
+        :show="PomofocusStore.settingsShown"
+        :is-start-pomodoros="isStartPomodoros"
+        :is-start-breaks="isStartBreaks"
+        @close="closeSettings"
+        @time-save-changes="timeSaveChanges"
+        @auto-start-pomodoro="autoStartPomodoro"
+        @auto-start-breaks="autoStartBreaks"
+    />
     <div class="w-full text-center px-2 mx-auto max-w-[620px]">
         <div class="h-2px rounded-full bg-white mb-[40px]" :style="{ width: `${borderW}%` }" />
         <div class="m-auto max-w-[480px] w-full pt-[20px] pb-[30px] rounded-6px bg-[#ffffff1a] shadow-md">
             <div class="flex justify-center gap-1 lt-sm:gap-1">
                 <button
-                    v-for="button in buttons"
+                    v-for="button in PomofocusStore.buttons"
                     :key="button.id"
                     :style="{ backgroundColor: `${button.active ? '#00000026' : 'transparent'}` }"
                     class="overflow-hidden capitalize lt-sm:h-[28px] lt-sm:text-[14px] rounded-[4px] text-[16px] px-[12px] py-[2px] h-[28px] cursor-pointer text-white font-bold"
-                    @click="changeButton(button.id, button.color)"
+                    @click="changeButton(button.id)"
                 >
                     {{ button.name }}
                 </button>
@@ -299,7 +320,7 @@
         <TheTasks
             :refresh-timer="refreshTimer"
             :tasks="tasks"
-            :buttons="buttons"
+            :buttons="PomofocusStore.buttons"
             @delete="deleteTask"
             @clear-finished-tasks="clearFinishedTasks"
             @clear-all-tasks="clearAllTasks"

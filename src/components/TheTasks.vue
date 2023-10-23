@@ -1,13 +1,12 @@
 <script setup lang="ts">
     import type { Task } from "../models/task.types";
-    import type { Button } from "../models/button.types";
     import type { Edit } from "../models/edit.types";
 
     const props = defineProps<{
         refreshTimer: Function
         tasks: Task[]
-        buttons: Button[]
     }>();
+
     const emit = defineEmits<{
         (event: "close"): void
         (event: "delete", type: number): void
@@ -15,6 +14,8 @@
         (event: "clear-all-tasks"): void
         (event: "submit", type: any): void
     }>();
+
+    const PomofocusStore = usePomofocusStore();
 
     const editObj = ref<Edit>({
         noteShown: true, taskName: "", taskRepeatCount: 0, taskNote: "",
@@ -147,33 +148,33 @@
         const today = new Date() as Date;
         const hours = today.getHours() as number;
         const minutes = today.getMinutes() as number;
-        const pomo = Math.floor((minutes + ((props.buttons[0].time))) / 60) as number;
+        const pomo = Math.floor((minutes + ((PomofocusStore.buttons[0].time))) / 60) as number;
         let date = "" as string;
         if (pomo > 0 && !((hours + pomo) > 24)) {
-            if ((minutes + (pomos.value * props.buttons[0].time - (pomo * 60)) < 10 && (hours + pomo) < 10)) {
-                date = `0${hours + pomo} : 0${minutes + ((pomos.value * props.buttons[0].time) - (pomo * 60))}`;
-            } else if ((minutes + (pomos.value * props.buttons[0].time - (pomo * 60)) > 10 && (hours + pomo) < 10)) {
-                date = `0${hours + pomo} : ${minutes + ((pomos.value * props.buttons[0].time) - (pomo * 60))}`;
-            } else if ((minutes + (pomos.value * props.buttons[0].time - (pomo * 60)) < 10 && (hours + pomo) > 10)) {
-                date = `${hours + pomo} : 0${minutes + ((pomos.value * props.buttons[0].time) - (pomo * 60))}`;
+            if ((minutes + (pomos.value * PomofocusStore.buttons[0].time - (pomo * 60)) < 10 && (hours + pomo) < 10)) {
+                date = `0${hours + pomo} : 0${minutes + ((pomos.value * PomofocusStore.buttons[0].time) - (pomo * 60))}`;
+            } else if ((minutes + (pomos.value * PomofocusStore.buttons[0].time - (pomo * 60)) > 10 && (hours + pomo) < 10)) {
+                date = `0${hours + pomo} : ${minutes + ((pomos.value * PomofocusStore.buttons[0].time) - (pomo * 60))}`;
+            } else if ((minutes + (pomos.value * PomofocusStore.buttons[0].time - (pomo * 60)) < 10 && (hours + pomo) > 10)) {
+                date = `${hours + pomo} : 0${minutes + ((pomos.value * PomofocusStore.buttons[0].time) - (pomo * 60))}`;
             } else {
-                date = `${hours + pomo} : ${minutes + ((pomos.value * props.buttons[0].time) - (pomo * 60))}`;
+                date = `${hours + pomo} : ${minutes + ((pomos.value * PomofocusStore.buttons[0].time) - (pomo * 60))}`;
             }
         } else if (((hours + pomo) > 24)) {
             date = `00 : 00`;
         } else {
-            if ((minutes + (props.buttons[0].time * pomos.value)) < 10 && (hours) < 10) {
-                date = `0${hours} : 0${minutes + (props.buttons[0].time * pomos.value)}`;
+            if ((minutes + (PomofocusStore.buttons[0].time * pomos.value)) < 10 && (hours) < 10) {
+                date = `0${hours} : 0${minutes + (PomofocusStore.buttons[0].time * pomos.value)}`;
             } else
-                if ((minutes + (props.buttons[0].time * pomos.value)) > 10 && (hours) < 10) {
-                    date = `0${hours} : ${minutes + (props.buttons[0].time * pomos.value)}`;
-                } else if ((minutes + (props.buttons[0].time * pomos.value)) < 10 && (hours) > 10) {
-                    date = `${hours} : 0${minutes + (props.buttons[0].time * pomos.value)}`;
+                if ((minutes + (PomofocusStore.buttons[0].time * pomos.value)) > 10 && (hours) < 10) {
+                    date = `0${hours} : ${minutes + (PomofocusStore.buttons[0].time * pomos.value)}`;
+                } else if ((minutes + (PomofocusStore.buttons[0].time * pomos.value)) < 10 && (hours) > 10) {
+                    date = `${hours} : 0${minutes + (PomofocusStore.buttons[0].time * pomos.value)}`;
                 } else {
-                    date = `${hours} : ${minutes + (props.buttons[0].time * pomos.value)}`;
+                    date = `${hours} : ${minutes + (PomofocusStore.buttons[0].time * pomos.value)}`;
                 }
         }
-        timeHour.value = (props.buttons[0].time * pomos.value) / 60;
+        timeHour.value = (PomofocusStore.buttons[0].time * pomos.value) / 60;
         return date;
     });
 </script>

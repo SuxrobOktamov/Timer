@@ -36,6 +36,7 @@
     function onCancel(): void {
         emit("cancel");
     }
+
     function onDelete(): void {
         emit("delete");
     }

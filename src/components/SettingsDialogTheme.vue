@@ -1,5 +1,16 @@
 <script lang="ts" setup>
     import { SwatchIcon } from "@heroicons/vue/24/outline";
+
+    const PomofocusStore = usePomofocusStore();
+
+    function backgroundDark() {
+        PomofocusStore.runDarking = !PomofocusStore.runDarking;
+    }
+
+    function changeColors(id: number): void {
+        PomofocusStore.countColor = id;
+        PomofocusStore.shownColorsDialog = true;
+    }
 </script>
 
 <template>
@@ -10,15 +21,15 @@
         <div class="flex items-center justify-between mt-4">
             <span class="flex items-center gap-2">Color Themes </span>
             <div class="flex items-center justify-center gap-3">
-                <div class="cursor-pointer w-7 h-7 rounded-md" />
-                <div class="cursor-pointer w-7 h-7 rounded-md" />
-                <div class="cursor-pointer w-7 h-7 rounded-md" />
+                <div :style="{ backgroundColor: PomofocusStore.colorOne }" class="cursor-pointer w-7 h-7 rounded-md" @click="changeColors(0)" />
+                <div :style="{ backgroundColor: PomofocusStore.colorTwo }" class="cursor-pointer w-7 h-7 rounded-md" @click="changeColors(1)" />
+                <div :style="{ backgroundColor: PomofocusStore.colorThree }" class="cursor-pointer w-7 h-7 rounded-md" @click="changeColors(2)" />
             </div>
         </div>
         <div class="flex items-center justify-between mt-5">
             <span class="flex items-center gap-2">Dark Mode when running </span>
-            <div class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]">
-                <div class="w-[26px] h-[26px] rounded-full bg-white toggle" />
+            <div :style="{ backgroundColor: `${PomofocusStore.runDarking ? '#84c733cc' : '#ccc'}` }" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]" @click="backgroundDark()">
+                <div :style="{ transform: `${PomofocusStore.runDarking ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
             </div>
         </div>
         <div class="flex flex-wrap items-center justify-between mt-5 gap-y-2 border-b border-b-2px pb-10">
@@ -28,4 +39,5 @@
             </button>
         </div>
     </div>
+    <DialogThemeColorsDialog />
 </template>

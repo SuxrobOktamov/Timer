@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    DialogThemeColorsDialog: typeof import('./components/DialogThemeColorsDialog.vue')['default']
     IntegrationTodoistInfoDialog: typeof import('./components/IntegrationTodoistInfoDialog.vue')['default']
     IntegrationWebhookInfoDialog: typeof import('./components/IntegrationWebhookInfoDialog.vue')['default']
     NotificationMobileInfoDialog: typeof import('./components/NotificationMobileInfoDialog.vue')['default']
@@ -18,6 +19,7 @@ declare module '@vue/runtime-core' {
     SettingsDialogSound: typeof import('./components/SettingsDialogSound.vue')['default']
     SettingsDialogTask: typeof import('./components/SettingsDialogTask.vue')['default']
     SettingsDialogTheme: typeof import('./components/SettingsDialogTheme.vue')['default']
+    SettingsDialogThemeColorsDialog: typeof import('./components/SettingsDialogThemeColorsDialog.vue')['default']
     SettingsDialogTimer: typeof import('./components/SettingsDialogTimer.vue')['default']
     TaskAdd: typeof import('./components/TaskAdd.vue')['default']
     TaskAddEdit: typeof import('./components/TaskAddEdit.vue')['default']
