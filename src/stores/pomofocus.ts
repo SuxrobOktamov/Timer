@@ -87,7 +87,6 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     const tickingSound = ref<number>(100);
     const runDarking = ref<boolean>(false);
     const countColor = ref<number>(0);
-    const shownColorsDialog = ref<boolean>(false);
 
     function loadSong(): void {
         startSound.src = "/src/assets/audio/start-13691.mp3";
@@ -106,11 +105,6 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
             }
             return item;
         });
-        shownColorsDialog.value = false;
-    }
-
-    function colorsDialogClose(): void {
-        shownColorsDialog.value = false;
     }
 
     watchEffect(() => {
@@ -136,7 +130,6 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         alarmSongArr,
         runDarking,
         ColorArrs,
-        shownColorsDialog,
         countColor,
         colorOne,
         colorTwo,
@@ -148,7 +141,6 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         taskEndSound,
         startSound,
         changeColor,
-        colorsDialogClose,
     };
 });
 

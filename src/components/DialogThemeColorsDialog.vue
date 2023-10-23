@@ -1,11 +1,26 @@
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
+
+    const emit = defineEmits<{
+        (event: "close"): void
+    }>();
+
     const PomofocusStore = usePomofocusStore();
+    const shownColorsDialog = ref<boolean>(false);
+
+    function changeColor(id: number): void {
+        PomofocusStore.changeColor(id);
+        emit("close");
+    }
+
+    function colorsDialogClose(): void {
+        emit("close");
+    }
 </script>
 
 <template>
-    <TransitionRoot as="template" :show="PomofocusStore.shownColorsDialog">
-        <Dialog as="div" class="relative z-10" @close="PomofocusStore.colorsDialogClose()">
+    <TransitionRoot as="template" :show="shownColorsDialog">
+        <Dialog as="div" class="relative z-10" @close="colorsDialogClose()">
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -40,7 +55,7 @@
                                         :key="ColorArr.id"
                                         :style="{ backgroundColor: ColorArr.color }"
                                         class="cursor-pointer w-14 h-14 rounded-lg flex items-center justify-center"
-                                        @click="PomofocusStore.changeColor(ColorArr.id)"
+                                        @click="changeColor(ColorArr.id)"
                                     >
                                         <div v-show="ColorArr.active" i-carbon-checkmark class="text-white text-[20px] font-black" />
                                     </div>

@@ -2,6 +2,7 @@
     import { SwatchIcon } from "@heroicons/vue/24/outline";
 
     const PomofocusStore = usePomofocusStore();
+    const shownColorsDialog = ref<boolean>(false);
 
     function backgroundDark() {
         PomofocusStore.runDarking = !PomofocusStore.runDarking;
@@ -9,7 +10,11 @@
 
     function changeColors(id: number): void {
         PomofocusStore.countColor = id;
-        PomofocusStore.shownColorsDialog = true;
+        shownColorsDialog.value = true;
+    }
+
+    function close(): void {
+        shownColorsDialog.value = false;
     }
 </script>
 
@@ -39,5 +44,5 @@
             </button>
         </div>
     </div>
-    <DialogThemeColorsDialog />
+    <DialogThemeColorsDialog :show="shownColorsDialog" @close="close" />
 </template>
