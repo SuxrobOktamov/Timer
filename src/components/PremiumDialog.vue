@@ -1,4 +1,3 @@
-<!-- eslint-disable no-alert -->
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 
@@ -16,15 +15,13 @@
 
     function selectPlan(id: number): void {
         planArrs.value.map<Plan>((item) => {
-            item.active = false;
-            if (item.id === id) {
-                item.active = true;
-            }
+            item.active = item.id === id;
             return item;
         });
     }
 
     function onClickOutside(): void {
+        // eslint-disable-next-line no-alert
         alert("To purchase the premium plan, please login first.");
     }
 

@@ -6,10 +6,11 @@
     }>();
 
     const PomofocusStore = usePomofocusStore();
+
     const shownColorsDialog = ref<boolean>(false);
 
-    function changeColor(id: number): void {
-        PomofocusStore.changeColor(id);
+    function changeTheme(id: number): void {
+        PomofocusStore.changeTheme(id);
         emit("close");
     }
 
@@ -51,13 +52,13 @@
                                 </DialogTitle>
                                 <div class="p-5 flex flex-wrap gap-3">
                                     <div
-                                        v-for="ColorArr in PomofocusStore.ColorArrs[PomofocusStore.countColor].obj"
-                                        :key="ColorArr.id"
-                                        :style="{ backgroundColor: ColorArr.color }"
+                                        v-for="Variant in PomofocusStore.ColorArrs[PomofocusStore.editingThemeId].variants"
+                                        :key="Variant.id"
+                                        :style="{ backgroundColor: Variant.color }"
                                         class="cursor-pointer w-14 h-14 rounded-lg flex items-center justify-center"
-                                        @click="changeColor(ColorArr.id)"
+                                        @click="changeTheme(Variant.id)"
                                     >
-                                        <div v-show="ColorArr.active" i-carbon-checkmark class="text-white text-[20px] font-black" />
+                                        <div v-show="Variant.active" i-carbon-checkmark class="text-white text-[20px] font-black" />
                                     </div>
                                 </div>
                             </div>

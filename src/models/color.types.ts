@@ -1,7 +1,7 @@
-export interface Color {
+export interface Colors {
     id: number
     color?: string
-    obj: {
+    variants: {
         id: number
         color: string
         active: boolean

@@ -1,13 +1,13 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import type { Button } from "@/models/button.types";
 import type { Song } from "@/models/song.types";
-import type { Color } from "@/models/color.types";
+import type { Colors } from "@/models/color.types";
 
 export const usePomofocusStore = defineStore("pomofocus", () => {
-    const ColorArrs = ref<Color[]>([
+    const ColorArrs = ref<Colors[]>([
         {
             id: 1,
-            obj: [
+            variants: [
                 { id: 1, active: true, color: "#ba4949" },
                 { id: 2, active: false, color: "#38858a" },
                 { id: 3, active: false, color: "#397097" },
@@ -20,7 +20,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         },
         {
             id: 2,
-            obj: [
+            variants: [
                 { id: 1, active: false, color: "#ba4949" },
                 { id: 2, active: true, color: "#38858a" },
                 { id: 3, active: false, color: "#397097" },
@@ -33,7 +33,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         },
         {
             id: 3,
-            obj: [
+            variants: [
                 { id: 1, active: false, color: "#ba4949" },
                 { id: 2, active: false, color: "#38858a" },
                 { id: 3, active: true, color: "#397097" },
@@ -46,20 +46,20 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         },
     ]);
 
-    const colorOne = computed<any>(() => {
-        return ColorArrs.value[0].obj.find(item => item.active)?.color;
+    const pomodoroTheme = computed<any>(() => {
+        return ColorArrs.value[0].variants.find(item => item.active)?.color;
     });
-    const colorTwo = computed<any>(() => {
-        return ColorArrs.value[1].obj.find(item => item.active)?.color;
+    const shortBreakTheme = computed<any>(() => {
+        return ColorArrs.value[1].variants.find(item => item.active)?.color;
     });
-    const colorThree = computed<any>(() => {
-        return ColorArrs.value[2].obj.find(item => item.active)?.color;
+    const longBreakTheme = computed<any>(() => {
+        return ColorArrs.value[2].variants.find(item => item.active)?.color;
     });
 
     const buttons = ref<Button[]>([
-        { name: "Pomodoro", id: 1, active: true, time: 1, color: colorOne.value, spendTime: "Time to focus!" },
-        { name: "Short Break", id: 2, active: false, time: 1, color: colorTwo.value, spendTime: "Time for a break!" },
-        { name: "Long Break", id: 3, active: false, time: 15, color: colorThree.value, spendTime: "Time for a break!" },
+        { name: "Pomodoro", id: 1, active: true, time: 1, color: pomodoroTheme.value, spendTime: "Time to focus!" },
+        { name: "Short Break", id: 2, active: false, time: 1, color: shortBreakTheme.value, spendTime: "Time for a break!" },
+        { name: "Long Break", id: 3, active: false, time: 15, color: longBreakTheme.value, spendTime: "Time for a break!" },
     ]);
     const tickingSongArr = ref<Song[]>([
         { path: "", id: 0, name: "None" },
@@ -79,14 +79,14 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     const startSound = document.createElement("audio");
     const timerSound = document.createElement("audio");
     const taskEndSound = document.createElement("audio");
-    const bgColor = ref<string>(colorOne.value);
+    const bgColor = ref<string>(pomodoroTheme.value);
     const settingsShown = ref<boolean>(false);
     const timerSoundChange = ref<number>(3);
     const endSoundChange = ref<number>(2);
     const alarmSound = ref<number>(100);
     const tickingSound = ref<number>(100);
     const runDarking = ref<boolean>(false);
-    const countColor = ref<number>(0);
+    const editingThemeId = ref<number>(0);
 
     function loadSong(): void {
         startSound.src = "/src/assets/audio/start-13691.mp3";
@@ -97,8 +97,8 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         taskEndSound.load();
     }
 
-    function changeColor(id: number): void {
-        ColorArrs.value[countColor.value].obj.map((item) => {
+    function changeTheme(id: number): void {
+        ColorArrs.value[editingThemeId.value].variants.map((item) => {
             item.active = false;
             if (id === item.id) {
                 item.active = true;
@@ -109,15 +109,15 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
 
     watchEffect(() => {
         if (buttons.value[0].active) {
-            bgColor.value = colorOne.value;
+            bgColor.value = pomodoroTheme.value;
         } else if (buttons.value[1].active) {
-            bgColor.value = colorTwo.value;
+            bgColor.value = shortBreakTheme.value;
         } else {
-            bgColor.value = colorThree.value;
+            bgColor.value = longBreakTheme.value;
         }
-        buttons.value[0].color = colorOne.value;
-        buttons.value[1].color = colorTwo.value;
-        buttons.value[2].color = colorThree.value;
+        buttons.value[0].color = pomodoroTheme.value;
+        buttons.value[1].color = shortBreakTheme.value;
+        buttons.value[2].color = longBreakTheme.value;
     });
 
     return {
@@ -130,17 +130,17 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         alarmSongArr,
         runDarking,
         ColorArrs,
-        countColor,
-        colorOne,
-        colorTwo,
-        colorThree,
+        editingThemeId,
+        pomodoroTheme,
+        shortBreakTheme,
+        longBreakTheme,
         alarmSound,
         tickingSound,
         loadSong,
         timerSound,
         taskEndSound,
         startSound,
-        changeColor,
+        changeTheme,
     };
 });
 
