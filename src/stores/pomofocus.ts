@@ -4,7 +4,7 @@ import type { Song } from "@/models/song.types";
 import type { Colors } from "@/models/color.types";
 
 export const usePomofocusStore = defineStore("pomofocus", () => {
-    const ColorArrs = ref<Colors[]>([
+    const colorArrs = ref<Colors[]>([
         {
             id: 1,
             variants: [
@@ -47,13 +47,13 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     ]);
 
     const pomodoroTheme = computed<any>(() => {
-        return ColorArrs.value[0].variants.find(item => item.active)?.color;
+        return colorArrs.value[0].variants.find(item => item.active)?.color;
     });
     const shortBreakTheme = computed<any>(() => {
-        return ColorArrs.value[1].variants.find(item => item.active)?.color;
+        return colorArrs.value[1].variants.find(item => item.active)?.color;
     });
     const longBreakTheme = computed<any>(() => {
-        return ColorArrs.value[2].variants.find(item => item.active)?.color;
+        return colorArrs.value[2].variants.find(item => item.active)?.color;
     });
 
     const buttons = ref<Button[]>([
@@ -98,7 +98,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     }
 
     function changeTheme(id: number): void {
-        ColorArrs.value[editingThemeId.value].variants.map((item) => {
+        colorArrs.value[editingThemeId.value].variants.map((item) => {
             item.active = false;
             if (id === item.id) {
                 item.active = true;
@@ -129,7 +129,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         tickingSongArr,
         alarmSongArr,
         runDarking,
-        ColorArrs,
+        colorArrs,
         editingThemeId,
         pomodoroTheme,
         shortBreakTheme,

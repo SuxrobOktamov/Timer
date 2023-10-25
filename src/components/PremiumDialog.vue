@@ -1,20 +1,20 @@
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 
-    import type { Plan } from "../models/plan.types";
+    import type { Plans } from "../models/plan.types";
 
     const emit = defineEmits<{
         (event: "close"): void
     }>();
 
-    const planArrs = ref<Plan[]>([
+    const planArrs = ref<Plans[]>([
         { id: 1, type: "MONTHLY", price: 1.99, name: "/ month", active: true },
         { id: 2, type: "YEARLY", price: 12, name: "/ year", active: false },
         { id: 3, type: "LIFETIME", price: 36, name: "/ lifetime", active: false },
     ]);
 
     function selectPlan(id: number): void {
-        planArrs.value.map<Plan>((item) => {
+        planArrs.value.map<Plans>((item) => {
             item.active = item.id === id;
             return item;
         });

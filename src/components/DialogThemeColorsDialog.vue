@@ -1,27 +1,31 @@
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
+    import { storeToRefs } from "pinia";
 
-    const emit = defineEmits<{
-        (event: "close"): void
+    defineProps<{
+        modelValue: boolean
     }>();
 
-    const PomofocusStore = usePomofocusStore();
+    const emit = defineEmits<{
+        (event: "update:modelValue", value: boolean): void
+    }>();
 
-    const shownColorsDialog = ref<boolean>(false);
+    const { changeTheme } = usePomofocusStore();
+    const { editingThemeId, colorArrs } = storeToRefs(usePomofocusStore());
 
-    function changeTheme(id: number): void {
-        PomofocusStore.changeTheme(id);
-        emit("close");
+    function switchTheme(id: number): void {
+        changeTheme(id);
+        close();
     }
 
-    function colorsDialogClose(): void {
-        emit("close");
+    function close(): void {
+        emit("update:modelValue", false);
     }
 </script>
 
 <template>
-    <TransitionRoot as="template" :show="shownColorsDialog">
-        <Dialog as="div" class="relative z-10" @close="colorsDialogClose()">
+    <TransitionRoot as="template" :show="modelValue">
+        <Dialog as="div" class="relative z-10" @close="close()">
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -52,13 +56,13 @@
                                 </DialogTitle>
                                 <div class="p-5 flex flex-wrap gap-3">
                                     <div
-                                        v-for="Variant in PomofocusStore.ColorArrs[PomofocusStore.editingThemeId].variants"
-                                        :key="Variant.id"
-                                        :style="{ backgroundColor: Variant.color }"
+                                        v-for="variant in colorArrs[editingThemeId].variants"
+                                        :key="variant.id"
+                                        :style="{ backgroundColor: variant.color }"
                                         class="cursor-pointer w-14 h-14 rounded-lg flex items-center justify-center"
-                                        @click="changeTheme(Variant.id)"
+                                        @click="switchTheme(variant.id)"
                                     >
-                                        <div v-show="Variant.active" i-carbon-checkmark class="text-white text-[20px] font-black" />
+                                        <div v-show="variant.active" i-carbon-checkmark class="text-white text-[20px] font-black" />
                                     </div>
                                 </div>
                             </div>

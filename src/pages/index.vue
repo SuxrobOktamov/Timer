@@ -5,10 +5,6 @@
 
     const PomofocusStore = usePomofocusStore();
 
-    // const startSound = document.createElement("audio");
-    // const timerSound = document.createElement("audio");
-    // const taskEndSound = document.createElement("audio");
-
     const tasks = ref<Task[]>([]);
 
     const borderW = ref<number>(0);

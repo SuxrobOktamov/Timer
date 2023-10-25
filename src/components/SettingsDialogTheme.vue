@@ -15,10 +15,6 @@
         editingThemeId.value = id;
         shownColorsDialog.value = true;
     }
-
-    function close(): void {
-        shownColorsDialog.value = false;
-    }
 </script>
 
 <template>
@@ -47,5 +43,5 @@
             </button>
         </div>
     </div>
-    <DialogThemeColorsDialog :show="shownColorsDialog" @close="close" />
+    <DialogThemeColorsDialog v-model="shownColorsDialog" />
 </template>
