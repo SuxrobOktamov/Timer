@@ -3,6 +3,7 @@
     import { storeToRefs } from "pinia";
 
     const PomofocusStore = usePomofocusStore();
+
     const { editingThemeId } = storeToRefs(usePomofocusStore());
 
     const shownColorsDialog = ref<boolean>(false);

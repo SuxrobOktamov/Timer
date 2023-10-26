@@ -25,12 +25,10 @@
 
     function every(): void {
         reminderType.value = "Every";
-        reminderTypeDropdownShown.value = true;
     }
 
     function last(): void {
         reminderType.value = "Last";
-        reminderTypeDropdownShown.value = true;
     }
 </script>
 

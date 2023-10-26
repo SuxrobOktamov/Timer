@@ -2,13 +2,15 @@
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
     import { storeToRefs } from "pinia";
 
-    defineProps<{
+    const props = defineProps<{
         modelValue: boolean
     }>();
 
     const emit = defineEmits<{
         (event: "update:modelValue", value: boolean): void
     }>();
+
+    const shownColorsDialog = useVModel(props, "modelValue", emit);
 
     const { changeTheme } = usePomofocusStore();
     const { editingThemeId, colorArrs } = storeToRefs(usePomofocusStore());
@@ -19,12 +21,12 @@
     }
 
     function close(): void {
-        emit("update:modelValue", false);
+        shownColorsDialog.value = false;
     }
 </script>
 
 <template>
-    <TransitionRoot as="template" :show="modelValue">
+    <TransitionRoot as="template" :show="shownColorsDialog">
         <Dialog as="div" class="relative z-10" @close="close()">
             <TransitionChild
                 as="template"
