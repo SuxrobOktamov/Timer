@@ -25,30 +25,30 @@
     const timeHour = ref<number>(0);
     const taskId = ref<number>();
 
-    function showTask(type: "add" | "edit", id?: number): void {
-        if (type === "add") {
-            addTaskShown.value = true;
-            props.tasks.forEach((item: Task) => {
-                item.isEdit = true;
-            });
-        } else {
-            props.tasks.forEach((task: Task) => {
-                taskId.value = id;
-                addTaskShown.value = false;
-                task.isEdit = true;
-                if (task.id === id) {
-                    task.isEdit = false;
-                    editObj.value.taskName = task.work;
-                    editObj.value.taskRepeatCount = task.count;
-                    editObj.value.taskNote = task.title;
-                    if (task.title?.length) {
-                        editObj.value.noteShown = false;
-                    } else {
-                        editObj.value.noteShown = true;
-                    }
+    function showTaskAdd(): void {
+        addTaskShown.value = true;
+        props.tasks.forEach((item: Task) => {
+            item.isEdit = true;
+        });
+    }
+
+    function showTaskEdit(id: number): void {
+        props.tasks.forEach((task: Task) => {
+            taskId.value = id;
+            addTaskShown.value = false;
+            task.isEdit = true;
+            if (task.id === id) {
+                task.isEdit = false;
+                editObj.value.taskName = task.work;
+                editObj.value.taskRepeatCount = task.count;
+                editObj.value.taskNote = task.title;
+                if (task.title?.length) {
+                    editObj.value.noteShown = false;
+                } else {
+                    editObj.value.noteShown = true;
                 }
-            });
-        }
+            }
+        });
     }
 
     function onCancel(type: number, id?: number): void {
@@ -207,7 +207,7 @@
                         <span class="text-[18px] text-[#bbb] font-bold">{{ task.finishedCount }}/ <small>{{ task.count }}</small></span>
                         <button
                             class="px-[1px] border py-[1px] bg-[#fff] rounded shadow"
-                            @click="showTask('edit', task.id)"
+                            @click="showTaskEdit(task.id)"
                         >
                             <div i-carbon-overflow-menu-vertical class="text-gray-400 font-extrabold text-[24px] pointer-events-none" />
                         </button>
@@ -233,7 +233,7 @@
             <button
                 v-if="!addTaskShown"
                 class="w-full flex text-[18px] cursor-pointer opacity-60 p-4 border-dashed border-2px bg-[#0000001a] rounded-lg items-center justify-center gap-2"
-                @click="showTask('add')"
+                @click="showTaskAdd()"
             >
                 <div i-carbon-add-filled />
                 <span>Add Task</span>

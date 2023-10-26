@@ -1,14 +1,15 @@
 <script lang="ts" setup>
     import { ClipboardDocumentCheckIcon } from "@heroicons/vue/24/outline";
-    const isActiveOne = ref<boolean>(true);
-    const isActiveTwo = ref<boolean>(false);
-    function active(e: number) {
-        if (e === 1) {
-            isActiveOne.value = !isActiveOne.value;
-        }
-        if (e === 2) {
-            isActiveTwo.value = !isActiveTwo.value;
-        }
+
+    const isCheck = ref<boolean>(true);
+    const isSwitch = ref<boolean>(false);
+
+    function autoCheck() {
+        isCheck.value = !isCheck.value;
+    }
+
+    function autoSwitch() {
+        isSwitch.value = !isSwitch.value;
     }
 </script>
 
@@ -21,16 +22,16 @@
             <span class="flex items-center gap-2">
                 Auto Check Tasks
             </span>
-            <div :style="{ backgroundColor: `${isActiveOne ? '#84c733cc' : '#ccc'}` }" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]" @click="active(1)">
-                <div :style="{ transform: `${isActiveOne ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
+            <div :style="{ backgroundColor: `${isCheck ? '#84c733cc' : '#ccc'}` }" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]" @click="autoCheck">
+                <div :style="{ transform: `${isCheck ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
             </div>
         </div>
         <div class="flex items-center justify-between mt-4 border-b border-b-2px pb-10">
             <span class="flex items-center gap-2">
                 Auto Switch Tasks
             </span>
-            <div :style="{ backgroundColor: `${isActiveTwo ? '#84c733cc' : '#ccc'}` }" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]" @click="active(2)">
-                <div :style="{ transform: `${isActiveTwo ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
+            <div :style="{ backgroundColor: `${isSwitch ? '#84c733cc' : '#ccc'}` }" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]" @click="autoSwitch">
+                <div :style="{ transform: `${isSwitch ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
             </div>
         </div>
     </div>

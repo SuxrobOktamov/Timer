@@ -19,15 +19,15 @@
         alert("Please log in use this feature.");
     }
 
-    function toggle() {
+    function toggleReminderDropdown() {
         reminderTypeDropdownShown.value = !reminderTypeDropdownShown.value;
     }
 
-    function every(): void {
+    function setReminderToEvery(): void {
         reminderType.value = "Every";
     }
 
-    function last(): void {
+    function setReminderToLast(): void {
         reminderType.value = "Last";
     }
 </script>
@@ -41,13 +41,13 @@
         <div class="flex items-center justify-between mt-4">
             <span class="flex items-center gap-2">Reminder</span>
             <div class="flex items-center gap-2">
-                <div class="text-[14px] relative flex items-center justify-between text-[#787878] cursor-pointer w-[80px] p-[10px] rounded bg-[#ebebeb]" @click="toggle">
+                <div class="text-[14px] relative flex items-center justify-between text-[#787878] cursor-pointer w-[80px] p-[10px] rounded bg-[#ebebeb]" @click="toggleReminderDropdown">
                     {{ reminderType }}<div i-carbon-caret-down class="text-18px" />
                     <div v-if="reminderTypeDropdownShown" class="py-2 absolute w-full right-0 top-11 bg-white rounded-md border shadow-2xl z-[999999]">
-                        <div class="p-3 box-border" @click="every">
+                        <div class="p-3 box-border" @click="setReminderToEvery">
                             Every
                         </div>
-                        <div class="p-3 box-border" @click="last">
+                        <div class="p-3 box-border" @click="setReminderToLast">
                             Last
                         </div>
                     </div>
