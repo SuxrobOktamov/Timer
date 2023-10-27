@@ -1,9 +1,11 @@
 <script setup lang="ts">
+    import { storeToRefs } from "pinia";
     import type { Button } from "../models/button.types";
     import type { Task } from "@/models/task.types";
     import type { SettingTimer } from "@/models/settingTimer.types";
 
-    const PomofocusStore = usePomofocusStore();
+    const { buttons, backgroundSound, bgColor, settingsShown } = storeToRefs(usePomofocusStore());
+    const { timerSound, taskEndSound, loadSong, startSound } = usePomofocusStore();
 
     const tasks = ref<Task[]>([]);
 
@@ -19,7 +21,7 @@
     const isStartBreaks = ref<boolean>(false);
 
     const overTime = computed<number>(() => {
-        const time = PomofocusStore.buttons.find(item => item.active) as Button;
+        const time = buttons.value.find(item => item.active) as Button;
         if (freshStart.value) {
             return time.time - 1;
         } else {
@@ -27,13 +29,13 @@
         }
     });
     const spendTime = computed<string>(() => {
-        const focus = PomofocusStore.buttons.find(item => item.active) as Button;
+        const focus = buttons.value.find(item => item.active) as Button;
         return focus.spendTime;
     });
     const disabled = computed<boolean>(() => {
-        if (!tasks.value.length && PomofocusStore.buttons[0].active) {
+        if (!tasks.value.length && buttons.value[0].active) {
             return true;
-        } else if (PomofocusStore.buttons[0].active) {
+        } else if (buttons.value[0].active) {
             const disabled = ref<boolean>(false);
             tasks.value.forEach((item: Task) => {
                 if (item.completed && item.active) {
@@ -69,8 +71,8 @@
     });
 
     function changeButton(id: number): void {
-        PomofocusStore.timerSound.pause();
-        PomofocusStore.buttons.map<Button>((item) => {
+        timerSound.pause();
+        buttons.value.map<Button>((item) => {
             if (item.id === id) {
                 item.active = true;
                 refreshTimer();
@@ -102,7 +104,7 @@
                 }, 1000);
             }
             updateMinute.value = setInterval(() => {
-                PomofocusStore.buttons.forEach((item: Button) => {
+                buttons.value.forEach((item: Button) => {
                     if (item.active) {
                         item.time--;
                     }
@@ -112,19 +114,19 @@
             clearInterval(updateMinute.value);
             clearInterval(updateSecond.value);
         }
-        if (isStart.value && PomofocusStore.runDarking) {
-            PomofocusStore.bgColor = "black";
+        if (isStart.value && backgroundSound.value) {
+            bgColor.value = "black";
         } else {
-            PomofocusStore.buttons.forEach((item: Button) => {
+            buttons.value.forEach((item: Button) => {
                 if (item.active) {
-                    PomofocusStore.bgColor = item.color;
+                    bgColor.value = item.color;
                 }
             });
         }
     }
 
     function finishedTasks(): void {
-        if (overTime.value === 0 && second.value === 0 && PomofocusStore.buttons[0].active) {
+        if (overTime.value === 0 && second.value === 0 && buttons.value[0].active) {
             if (tasks.value.length === 1) {
                 tasks.value[0].finishedCount++;
                 if (tasks.value[0].finishedCount === tasks.value[0].count) {
@@ -140,7 +142,7 @@
                     }
                 });
             }
-            PomofocusStore.taskEndSound.play();
+            taskEndSound.play();
             refreshTimer();
             nextTimer();
             finishedPomos.value++;
@@ -164,40 +166,40 @@
         freshStart.value = false;
         second.value = 60;
         overSecond.value = "00";
-        PomofocusStore.timerSound.pause();
+        timerSound.pause();
     }
 
     function nextTimer(): void {
         freshStart.value = false;
-        PomofocusStore.timerSound.pause();
+        timerSound.pause();
         refreshTimer();
-        if (PomofocusStore.buttons[0].active) {
-            PomofocusStore.buttons.forEach((item: Button) => item.active = false);
-            PomofocusStore.buttons[1].active = true;
-        } else if (PomofocusStore.buttons[1].active) {
-            PomofocusStore.buttons.forEach((item: Button) => item.active = false);
-            PomofocusStore.buttons[0].active = true;
+        if (buttons.value[0].active) {
+            buttons.value.forEach((item: Button) => item.active = false);
+            buttons.value[1].active = true;
+        } else if (buttons.value[1].active) {
+            buttons.value.forEach((item: Button) => item.active = false);
+            buttons.value[0].active = true;
         } else {
-            PomofocusStore.buttons.forEach((item: Button) => item.active = false);
-            PomofocusStore.buttons[0].active = true;
+            buttons.value.forEach((item: Button) => item.active = false);
+            buttons.value[0].active = true;
         }
     }
 
     function playTimer(): void {
         startTimer();
-        PomofocusStore.loadSong();
+        loadSong();
         playSong();
     }
 
     function playSong(): void {
-        PomofocusStore.startSound.play();
+        startSound.play();
         if (!isStart.value) {
-            PomofocusStore.timerSound.pause();
-            PomofocusStore.timerSound.loop = false;
-        } else if (PomofocusStore.buttons[0].active) {
+            timerSound.pause();
+            timerSound.loop = false;
+        } else if (buttons.value[0].active) {
             if (!(overTime.value === 0 && overSecond.value === "00")) {
-                PomofocusStore.timerSound.play();
-                PomofocusStore.timerSound.loop = true;
+                timerSound.play();
+                timerSound.loop = true;
             }
         }
     }
@@ -233,14 +235,14 @@
     }
 
     function closeSettings(): void {
-        PomofocusStore.settingsShown = false;
+        settingsShown.value = false;
     }
 
     function timeSaveChanges(obj: SettingTimer): void {
         if (obj.breakLongTime && obj.breakShortTime && obj.pomodoroTime) {
-            PomofocusStore.buttons[0].time = obj.pomodoroTime;
-            PomofocusStore.buttons[1].time = obj.breakShortTime;
-            PomofocusStore.buttons[2].time = obj.breakLongTime;
+            buttons.value[0].time = obj.pomodoroTime;
+            buttons.value[1].time = obj.breakShortTime;
+            buttons.value[2].time = obj.breakLongTime;
         }
     }
 
@@ -254,11 +256,11 @@
 
     watch(overSecond, () => {
         finishedTasks();
-        if (PomofocusStore.settingsShown) {
+        if (settingsShown.value) {
             refreshTimer();
-            PomofocusStore.buttons.forEach((item: Button) => {
+            buttons.value.forEach((item: Button) => {
                 if (item.active) {
-                    PomofocusStore.bgColor = item.color;
+                    bgColor.value = item.color;
                 }
             });
         }
@@ -267,7 +269,7 @@
 
 <template>
     <TheSettingsDialog
-        :show="PomofocusStore.settingsShown"
+        :show="settingsShown"
         :is-start-pomodoros="isStartPomodoros"
         :is-start-breaks="isStartBreaks"
         @close="closeSettings"
@@ -280,7 +282,7 @@
         <div class="m-auto max-w-[480px] w-full pt-[20px] pb-[30px] rounded-6px bg-[#ffffff1a] shadow-md">
             <div class="flex justify-center gap-1 lt-sm:gap-1">
                 <button
-                    v-for="button in PomofocusStore.buttons"
+                    v-for="button in buttons"
                     :key="button.id"
                     :style="{ backgroundColor: `${button.active ? '#00000026' : 'transparent'}` }"
                     class="overflow-hidden capitalize lt-sm:h-[28px] lt-sm:text-[14px] rounded-[4px] text-[16px] px-[12px] py-[2px] h-[28px] cursor-pointer text-white font-bold"
@@ -294,7 +296,7 @@
             </div>
             <div class="relative w-full text-center flex items-center justify-center">
                 <button
-                    :style="{ color: PomofocusStore.bgColor, cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? '0.4' : '1' }"
+                    :style="{ color: bgColor, cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? '0.4' : '1' }"
                     :class="isStart ? 'stop' : 'starts'"
                     :disabled="disabled"
                     class="uppercase border-none lt-sm:w-[170px] lt-sm:h-[45px] lt-sm:text-[20px]"
@@ -316,7 +318,7 @@
         <TheTasks
             :refresh-timer="refreshTimer"
             :tasks="tasks"
-            :buttons="PomofocusStore.buttons"
+            :buttons="buttons"
             @delete="deleteTask"
             @clear-finished-tasks="clearFinishedTasks"
             @clear-all-tasks="clearAllTasks"

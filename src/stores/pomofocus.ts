@@ -85,7 +85,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     const endSoundChange = ref<number>(2);
     const alarmSound = ref<number>(100);
     const tickingSound = ref<number>(100);
-    const runDarking = ref<boolean>(false);
+    const backgroundSound = ref<boolean>(false);
     const editingThemeId = ref<number>(0);
 
     function loadSong(): void {
@@ -128,7 +128,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         buttons,
         tickingSongArr,
         alarmSongArr,
-        runDarking,
+        backgroundSound,
         colorArrs,
         editingThemeId,
         pomodoroTheme,

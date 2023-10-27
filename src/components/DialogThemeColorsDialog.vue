@@ -5,7 +5,6 @@
     const props = defineProps<{
         modelValue: boolean
     }>();
-
     const emit = defineEmits<{
         (event: "update:modelValue", value: boolean): void
     }>();

@@ -6,16 +6,16 @@
     const webhookShown = ref<boolean>(false);
     const premiumShown = ref<boolean>(false);
 
-    function open(type: "todo" | "web" | "premium"): void {
-        if (type === "todo") {
-            todoistShown.value = true;
-        }
-        if (type === "web") {
-            webhookShown.value = true;
-        }
-        if (type === "premium") {
-            premiumShown.value = true;
-        }
+    function openTodo(): void {
+        todoistShown.value = true;
+    }
+
+    function openWeb(): void {
+        webhookShown.value = true;
+    }
+
+    function openPremium(): void {
+        premiumShown.value = true;
     }
 
     function close(): void {
@@ -31,15 +31,15 @@
             <ArrowsRightLeftIcon class="text-[16px] font-bold w-[1.2rem]" /> Integration
         </div>
         <div class="flex items-center justify-between mt-4">
-            <span class="flex items-center gap-2">Todoist <InformationCircleIcon class="text-[#bdbdbd] cursor-pointer w-[1.2rem]" @click="open('todo')" /></span>
-            <button class="text-[14px] flex items-center justify-between text-[#787878] cursor-pointer w-[100px] p-[8px] relative shadow-md border rounded bg-[#fff]" @click="open('premium')">
+            <span class="flex items-center gap-2">Todoist <InformationCircleIcon class="text-[#bdbdbd] cursor-pointer w-[1.2rem]" @click="openTodo()" /></span>
+            <button class="text-[14px] flex items-center justify-between text-[#787878] cursor-pointer w-[100px] p-[8px] relative shadow-md border rounded bg-[#fff]" @click="openPremium()">
                 Connect<LockClosedIcon class="w-[1.2rem] text-[14px] pointer-events-none" />
             </button>
             <IntegrationTodoistInfoDialog :show="todoistShown" @close="close" />
         </div>
         <div class="flex items-center justify-between mt-4 pb-10">
-            <span class="flex items-center gap-2">Webhook<InformationCircleIcon class="w-[1.2rem] text-[#bdbdbd] cursor-pointer" @click="open('web')" /></span>
-            <button class="text-[14px] flex items-center justify-between text-[#787878] cursor-pointer w-[70px] p-[8px] relative shadow-md border rounded bg-[#fff]" @click="open('premium')">
+            <span class="flex items-center gap-2">Webhook<InformationCircleIcon class="w-[1.2rem] text-[#bdbdbd] cursor-pointer" @click="openWeb()" /></span>
+            <button class="text-[14px] flex items-center justify-between text-[#787878] cursor-pointer w-[70px] p-[8px] relative shadow-md border rounded bg-[#fff]" @click="openPremium()">
                 Add<LockClosedIcon class="w-[1.2rem] text-[14px] pointer-events-none" />
             </button>
             <IntegrationWebhookInfoDialog :show="webhookShown" @close="close" />

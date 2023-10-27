@@ -1,11 +1,12 @@
 <script setup lang="ts">
     import { CheckCircleIcon } from "@heroicons/vue/24/solid";
     import { Cog6ToothIcon, DocumentChartBarIcon, UserCircleIcon } from "@heroicons/vue/24/outline";
+    import { storeToRefs } from "pinia";
 
-    const PomofocusStore = usePomofocusStore();
+    const { settingsShown } = storeToRefs(usePomofocusStore());
 
     function openSettings(): void {
-        PomofocusStore.settingsShown = true;
+        settingsShown.value = true;
     }
 </script>
 

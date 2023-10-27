@@ -1,24 +1,24 @@
 <script lang="ts" setup>
     import { ClockIcon } from "@heroicons/vue/24/outline";
+    import { storeToRefs } from "pinia";
     import type { SettingTimer } from "@/models/settingTimer.types";
 
     defineProps<{
         isStartPomodoros: boolean
         isStartBreaks: boolean
     }>();
-
     const emit = defineEmits<{
         (event: "time-save-changes", obj: SettingTimer): void
         (event: "auto-start-pomodoro"): void
         (event: "auto-start-breaks"): void
     }>();
 
-    const PomofocusStore = usePomofocusStore();
+    const { buttons } = storeToRefs(usePomofocusStore());
 
     const settingTimerObj = ref<SettingTimer>({
-        pomodoroTime: PomofocusStore.buttons[0].time,
-        breakShortTime: PomofocusStore.buttons[1].time,
-        breakLongTime: PomofocusStore.buttons[2].time,
+        pomodoroTime: buttons.value[0].time,
+        breakShortTime: buttons.value[1].time,
+        breakLongTime: buttons.value[2].time,
     });
 
     function changeInputValue(): void {
