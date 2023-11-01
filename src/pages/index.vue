@@ -240,9 +240,9 @@
 
     function timeSaveChanges(obj: SettingTimer): void {
         if (obj.breakLongTime && obj.breakShortTime && obj.pomodoroTime) {
-            buttons.value[0].time = obj.pomodoroTime;
-            buttons.value[1].time = obj.breakShortTime;
-            buttons.value[2].time = obj.breakLongTime;
+            buttons.value[0].time = Math.ceil(obj.pomodoroTime);
+            buttons.value[1].time = Math.ceil(obj.breakShortTime);
+            buttons.value[2].time = Math.ceil(obj.breakLongTime);
         }
     }
 

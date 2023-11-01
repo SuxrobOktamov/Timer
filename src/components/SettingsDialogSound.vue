@@ -47,7 +47,7 @@
         tickingSoundDropdownShown.value = !tickingSoundDropdownShown.value;
     }
 
-    function changeAlarmSoundValue(): void {
+    function openAlarmSoundDropdown(): void {
         loadSong();
         taskEndSound.volume = alarmSound.value / 100;
         taskEndSound.play();
@@ -95,7 +95,7 @@
                     min="0"
                     max="100"
                     class="focus:outline-none appearance-none rounded-full h-[7px]  bg-[#ccc]"
-                    @change="changeAlarmSoundValue()"
+                    @change="openAlarmSoundDropdown()"
                 >
             </div>
         </div>
