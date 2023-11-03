@@ -1,17 +1,22 @@
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 
+    const props = defineProps<{
+        modelValue: boolean
+    }>();
     const emit = defineEmits<{
-        (event: "close"): void
+        (event: "update:modelValue", value: boolean): void
     }>();
 
+    const shown = useVModel(props, "modelValue", emit);
+
     function close(): void {
-        emit("close");
+        shown.value = false;
     }
 </script>
 
 <template>
-    <TransitionRoot as="template">
+    <TransitionRoot as="template" :show="shown">
         <Dialog as="div" class="relative z-10" @close="close">
             <TransitionChild
                 as="template"

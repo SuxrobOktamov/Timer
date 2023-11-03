@@ -92,10 +92,6 @@
         });
     }
 
-    function closePremium(): void {
-        premiumShown.value = false;
-    }
-
     function openPremium(): void {
         premiumShown.value = true;
     }
@@ -253,7 +249,7 @@
                     Finish At: <span class="text-[#fff] text-[24px] px-1">{{ finishedTime }}</span> ( {{ timeHour.toFixed(1) }}h)
                 </div>
             </div>
-            <PremiumDialog :show="premiumShown" @close="closePremium" />
+            <PremiumDialog v-model="premiumShown" />
         </div>
     </form>
 </template>

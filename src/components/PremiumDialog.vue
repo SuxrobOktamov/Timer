@@ -3,10 +3,14 @@
 
     import type { Plan } from "../models/plan.types";
 
+    const props = defineProps<{
+        modelValue: boolean
+    }>();
     const emit = defineEmits<{
-        (event: "close"): void
+        (event: "update:modelValue", value: boolean): void
     }>();
 
+    const shown = useVModel(props, "modelValue", emit);
     const planArrs = ref<Plan[]>([
         { id: 1, type: "MONTHLY", price: 1.99, name: "/ month", active: true },
         { id: 2, type: "YEARLY", price: 12, name: "/ year", active: false },
@@ -26,12 +30,12 @@
     }
 
     function close(): void {
-        emit("close");
+        shown.value = false;
     }
 </script>
 
 <template>
-    <TransitionRoot as="template">
+    <TransitionRoot as="template" :show="shown">
         <Dialog as="div" class="relative z-20" @close="close">
             <TransitionChild
                 as="template"

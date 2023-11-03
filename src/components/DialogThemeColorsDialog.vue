@@ -12,7 +12,7 @@
     const shownColorsDialog = useVModel(props, "modelValue", emit);
 
     const { changeTheme } = usePomofocusStore();
-    const { editingThemeId, colorArrs } = storeToRefs(usePomofocusStore());
+    const { variants } = storeToRefs(usePomofocusStore());
 
     function switchTheme(id: number): void {
         changeTheme(id);
@@ -57,7 +57,7 @@
                                 </DialogTitle>
                                 <div class="p-5 flex flex-wrap gap-3">
                                     <div
-                                        v-for="variant in colorArrs[editingThemeId].variants"
+                                        v-for="variant in variants"
                                         :key="variant.id"
                                         :style="{ backgroundColor: variant.color }"
                                         class="cursor-pointer w-14 h-14 rounded-lg flex items-center justify-center"

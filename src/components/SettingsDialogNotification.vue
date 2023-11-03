@@ -6,10 +6,6 @@
     const reminderTypeDropdownShown = ref<boolean>(false);
     const reminderType = ref<"Every" | "Last">("Every");
 
-    function close(): void {
-        mobileAlarmInfoShown.value = false;
-    }
-
     function open(): void {
         mobileAlarmInfoShown.value = true;
     }
@@ -36,7 +32,7 @@
     <div class="px-6 pb-4">
         <div class="uppercase mt-[4px] flex items-center gap-1 text-[#bdbdbd] font-bold text-[16px]">
             <BellIcon class="text-[16px] font-bold w-[1.2rem]" />  Notification
-            <NotificationMobileInfoDialog :show="mobileAlarmInfoShown" @close="close" />
+            <NotificationMobileInfoDialog v-model="mobileAlarmInfoShown" />
         </div>
         <div class="flex items-center justify-between mt-4">
             <span class="flex items-center gap-2">Reminder</span>

@@ -17,12 +17,6 @@
     function openPremium(): void {
         premiumShown.value = true;
     }
-
-    function close(): void {
-        todoistShown.value = false;
-        webhookShown.value = false;
-        premiumShown.value = false;
-    }
 </script>
 
 <template>
@@ -35,15 +29,15 @@
             <button class="text-[14px] flex items-center justify-between text-[#787878] cursor-pointer w-[100px] p-[8px] relative shadow-md border rounded bg-[#fff]" @click="openPremium()">
                 Connect<LockClosedIcon class="w-[1.2rem] text-[14px] pointer-events-none" />
             </button>
-            <IntegrationTodoistInfoDialog :show="todoistShown" @close="close" />
+            <IntegrationTodoistInfoDialog v-model="todoistShown" />
         </div>
         <div class="flex items-center justify-between mt-4 pb-10">
             <span class="flex items-center gap-2">Webhook<InformationCircleIcon class="w-[1.2rem] text-[#bdbdbd] cursor-pointer" @click="openWeb()" /></span>
             <button class="text-[14px] flex items-center justify-between text-[#787878] cursor-pointer w-[70px] p-[8px] relative shadow-md border rounded bg-[#fff]" @click="openPremium()">
                 Add<LockClosedIcon class="w-[1.2rem] text-[14px] pointer-events-none" />
             </button>
-            <IntegrationWebhookInfoDialog :show="webhookShown" @close="close" />
+            <IntegrationWebhookInfoDialog v-model="webhookShown" />
         </div>
-        <PremiumDialog :show="premiumShown" @close="close" />
+        <PremiumDialog v-model="premiumShown" />
     </div>
 </template>

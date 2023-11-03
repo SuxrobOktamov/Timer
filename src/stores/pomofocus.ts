@@ -88,6 +88,10 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     const backgroundSound = ref<boolean>(false);
     const editingThemeId = ref<number>(0);
 
+    const variants = computed<any>(() => {
+        return colorArrs.value[editingThemeId.value].variants;
+    });
+
     function loadSong(): void {
         startSound.src = "/src/assets/audio/start-13691.mp3";
         startSound.load();
@@ -141,6 +145,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         taskEndSound,
         startSound,
         changeTheme,
+        variants,
     };
 });
 
