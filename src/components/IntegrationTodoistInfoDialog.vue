@@ -7,6 +7,7 @@
     const emit = defineEmits<{
         (event: "update:modelValue", value: boolean): void
     }>();
+
     const shown = useVModel(props, "modelValue", emit);
 
     function close(): void {

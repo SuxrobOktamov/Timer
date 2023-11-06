@@ -9,10 +9,10 @@
         (event: "update:modelValue", value: boolean): void
     }>();
 
-    const shownColorsDialog = useVModel(props, "modelValue", emit);
+    const shown = useVModel(props, "modelValue", emit);
 
     const { changeTheme } = usePomofocusStore();
-    const { variants } = storeToRefs(usePomofocusStore());
+    const { editingThemeVariants } = storeToRefs(usePomofocusStore());
 
     function switchTheme(id: number): void {
         changeTheme(id);
@@ -20,12 +20,12 @@
     }
 
     function close(): void {
-        shownColorsDialog.value = false;
+        shown.value = false;
     }
 </script>
 
 <template>
-    <TransitionRoot as="template" :show="shownColorsDialog">
+    <TransitionRoot as="template" :show="shown">
         <Dialog as="div" class="relative z-10" @close="close()">
             <TransitionChild
                 as="template"
@@ -57,7 +57,7 @@
                                 </DialogTitle>
                                 <div class="p-5 flex flex-wrap gap-3">
                                     <div
-                                        v-for="variant in variants"
+                                        v-for="variant in editingThemeVariants"
                                         :key="variant.id"
                                         :style="{ backgroundColor: variant.color }"
                                         class="cursor-pointer w-14 h-14 rounded-lg flex items-center justify-center"

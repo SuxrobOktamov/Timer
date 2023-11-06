@@ -4,6 +4,17 @@ import type { Song } from "@/models/song.types";
 import type { Colors } from "@/models/color.types";
 
 export const usePomofocusStore = defineStore("pomofocus", () => {
+    const startSound = document.createElement("audio");
+    const timerSound = document.createElement("audio");
+    const taskEndSound = document.createElement("audio");
+    const settingsShown = ref<boolean>(false);
+    const timerSoundChange = ref<number>(3);
+    const endSoundChange = ref<number>(2);
+    const alarmSound = ref<number>(100);
+    const tickingSound = ref<number>(100);
+    const backgroundSound = ref<boolean>(false);
+    const editingThemeId = ref<number>(0);
+
     const colorArrs = ref<Colors[]>([
         {
             id: 1,
@@ -46,6 +57,10 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         },
     ]);
 
+    const editingThemeVariants = computed<any>(() => {
+        return colorArrs.value[editingThemeId.value].variants;
+    });
+
     const pomodoroTheme = computed<any>(() => {
         return colorArrs.value[0].variants.find(item => item.active)?.color;
     });
@@ -55,6 +70,8 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     const longBreakTheme = computed<any>(() => {
         return colorArrs.value[2].variants.find(item => item.active)?.color;
     });
+
+    const bgColor = ref<string>(pomodoroTheme.value);
 
     const buttons = ref<Button[]>([
         { name: "Pomodoro", id: 1, active: true, time: 1, color: pomodoroTheme.value, spendTime: "Time to focus!" },
@@ -76,22 +93,6 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         { path: "/src/assets/audio/alarmSong/wood.mp3", id: 4, name: "Wood" },
     ]);
 
-    const startSound = document.createElement("audio");
-    const timerSound = document.createElement("audio");
-    const taskEndSound = document.createElement("audio");
-    const bgColor = ref<string>(pomodoroTheme.value);
-    const settingsShown = ref<boolean>(false);
-    const timerSoundChange = ref<number>(3);
-    const endSoundChange = ref<number>(2);
-    const alarmSound = ref<number>(100);
-    const tickingSound = ref<number>(100);
-    const backgroundSound = ref<boolean>(false);
-    const editingThemeId = ref<number>(0);
-
-    const variants = computed<any>(() => {
-        return colorArrs.value[editingThemeId.value].variants;
-    });
-
     function loadSong(): void {
         startSound.src = "/src/assets/audio/start-13691.mp3";
         startSound.load();
@@ -110,6 +111,13 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
             return item;
         });
     }
+
+    const alarmSoundName = computed<string>(() => {
+        return alarmSongArr.value[endSoundChange.value].name;
+    });
+    const tickingSoundName = computed<string>(() => {
+        return tickingSongArr.value[timerSoundChange.value].name;
+    });
 
     watchEffect(() => {
         if (buttons.value[0].active) {
@@ -145,7 +153,9 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         taskEndSound,
         startSound,
         changeTheme,
-        variants,
+        editingThemeVariants,
+        tickingSoundName,
+        alarmSoundName,
     };
 });
 

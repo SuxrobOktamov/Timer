@@ -11,6 +11,7 @@
     }>();
 
     const shown = useVModel(props, "modelValue", emit);
+
     const planArrs = ref<Plan[]>([
         { id: 1, type: "MONTHLY", price: 1.99, name: "/ month", active: true },
         { id: 2, type: "YEARLY", price: 12, name: "/ year", active: false },
