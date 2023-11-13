@@ -1,48 +1,75 @@
 <script lang="ts" setup>
     import { storeToRefs } from "pinia";
 
+    const props = defineProps<{
+        modelValue: boolean
+        tickingSoundDropdownShown: boolean
+    }>();
+    const emit = defineEmits<{
+        (event: "update: modelValue", value: boolean): void
+        (event: "update: tickingSoundDropdownShown", value: boolean): void
+    }>();
+
+    const shown = useVModel(props, "modelValue", emit);
+    const tickingHide = useVModel(props, "tickingSoundDropdownShown", emit);
+
     const { alarmSongArr, endSoundChange, alarmSound, settingsShown, alarmSoundName } = storeToRefs(usePomofocusStore());
 
-    const taskEndSound = document.createElement("audio");
-    const alarmDropdownShown = ref<boolean>(false);
-    const tickingSoundDropdownShown = ref<boolean>(false);
+    const taskEndSound = ref<HTMLAudioElement>();
 
     function loadSong(): void {
-        taskEndSound.src = alarmSongArr.value[endSoundChange.value].path as string;
-        taskEndSound.load();
+        if (!taskEndSound.value) {
+            return;
+        }
+
+        taskEndSound.value.src = alarmSongArr.value[endSoundChange.value].path as string;
+        taskEndSound.value.load();
     }
 
     function selectAlarmSound(id: number): void {
+        if (!taskEndSound.value) {
+            return;
+        }
+
+        tickingHide.value = false;
         endSoundChange.value = id;
         loadSong();
-        taskEndSound.play();
-        alarmDropdownShown.value = false;
+        taskEndSound.value.play();
+        shown.value = false;
     }
 
     function shownAlarmSound(): void {
-        tickingSoundDropdownShown.value = false;
-        alarmDropdownShown.value = !alarmDropdownShown.value;
+        tickingHide.value = false;
+        shown.value = !shown.value;
     }
 
     function openAlarmSoundDropdown(): void {
+        if (!taskEndSound.value) {
+            return;
+        }
+
         loadSong();
-        taskEndSound.volume = alarmSound.value / 100;
-        taskEndSound.play();
+        taskEndSound.value.volume = alarmSound.value / 100;
+        taskEndSound.value.play();
     }
 
     watchEffect(() => {
         if (!settingsShown.value) {
-            taskEndSound.pause();
+            if (!taskEndSound.value) {
+                return;
+            }
+            taskEndSound.value.pause();
         }
     });
 </script>
 
 <template>
+    <audio ref="taskEndSound" />
     <div class="flex flex-wrap items-center justify-between mt-4 gap-y-2">
         <span>Alarm Sound</span>
         <div class="text-[14px] relative flex items-center justify-between text-[#787878] cursor-pointer w-[130px] p-[10px] rounded bg-[#ebebeb]" @click.self="shownAlarmSound()">
             {{ alarmSoundName }} <div i-carbon-caret-down class="text-[18px] pointer-events-none" />
-            <ul v-if="alarmDropdownShown" class="py-2 absolute w-full right-0 -bottom-61 bg-white rounded-md border shadow-2xl z-[999999]">
+            <ul v-if="shown" class="py-2 absolute w-full right-0 -bottom-61 bg-white rounded-md border shadow-2xl z-[999999]">
                 <li
                     v-for="alarmArr in alarmSongArr"
                     :key="alarmArr.id"
