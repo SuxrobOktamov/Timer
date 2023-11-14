@@ -13,28 +13,30 @@
     const shown = useVModel(props, "modelValue", emit);
     const tickingHide = useVModel(props, "tickingSoundDropdownShown", emit);
 
-    const { alarmSongArr, endSoundChange, alarmSound, settingsShown, alarmSoundName } = storeToRefs(usePomofocusStore());
+    const { alarmSongArr, endSoundChange, alarmSound, alarmSoundName } = storeToRefs(usePomofocusStore());
 
-    const taskEndSound = ref<HTMLAudioElement>();
+    const timerSound = document.getElementById("tickingAudioSound") as HTMLAudioElement;
+    const taskEndSound = document.getElementById("alarmAudioSound") as HTMLAudioElement;
 
     function loadSong(): void {
-        if (!taskEndSound.value) {
+        if (!taskEndSound) {
             return;
         }
 
-        taskEndSound.value.src = alarmSongArr.value[endSoundChange.value].path as string;
-        taskEndSound.value.load();
+        taskEndSound.src = alarmSongArr.value[endSoundChange.value].path as string;
+        taskEndSound.load();
     }
 
     function selectAlarmSound(id: number): void {
-        if (!taskEndSound.value) {
+        if (!taskEndSound) {
             return;
         }
 
         tickingHide.value = false;
         endSoundChange.value = id;
         loadSong();
-        taskEndSound.value.play();
+        taskEndSound.play();
+        timerSound.pause();
         shown.value = false;
     }
 
@@ -44,22 +46,18 @@
     }
 
     function openAlarmSoundDropdown(): void {
-        if (!taskEndSound.value) {
+        if (!taskEndSound) {
             return;
         }
 
         loadSong();
-        taskEndSound.value.volume = alarmSound.value / 100;
-        taskEndSound.value.play();
+        taskEndSound.volume = alarmSound.value / 100;
+        taskEndSound.play();
+        timerSound.pause();
     }
 
-    watchEffect(() => {
-        if (!settingsShown.value) {
-            if (!taskEndSound.value) {
-                return;
-            }
-            taskEndSound.value.pause();
-        }
+    onUnmounted(() => {
+        taskEndSound.pause();
     });
 </script>
 

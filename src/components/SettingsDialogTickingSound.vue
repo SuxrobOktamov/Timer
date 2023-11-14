@@ -13,27 +13,29 @@
     const shown = useVModel(props, "modelValue", emit);
     const alarmHide = useVModel(props, "alarmDropdownShown", emit);
 
-    const { tickingSongArr, timerSoundChange, tickingSound, settingsShown, tickingSoundName } = storeToRefs(usePomofocusStore());
+    const { tickingSongArr, timerSoundChange, tickingSound, tickingSoundName } = storeToRefs(usePomofocusStore());
 
-    const timerSound = ref<HTMLAudioElement>();
+    const timerSound = document.getElementById("tickingAudioSound") as HTMLAudioElement;
+    const taskEndSound = document.getElementById("alarmAudioSound") as HTMLAudioElement;
 
     function loadSong(): void {
-        if (!timerSound.value) {
+        if (!timerSound) {
             return;
         }
 
-        timerSound.value.src = tickingSongArr.value[timerSoundChange.value].path as string;
-        timerSound.value.load();
+        timerSound.src = tickingSongArr.value[timerSoundChange.value].path as string;
+        timerSound.load();
     }
 
     function selectTickingSound(id: number): void {
-        if (!timerSound.value) {
+        if (!timerSound) {
             return;
         }
 
         timerSoundChange.value = id;
         loadSong();
-        timerSound.value.play();
+        timerSound.play();
+        taskEndSound.pause();
         shown.value = false;
     }
 
@@ -43,22 +45,18 @@
     }
 
     function openTickingSoundDropdown(): void {
-        if (!timerSound.value) {
+        if (!timerSound) {
             return;
         }
 
         loadSong();
-        timerSound.value.volume = tickingSound.value / 100;
-        timerSound.value.play();
+        timerSound.volume = tickingSound.value / 100;
+        timerSound.play();
+        taskEndSound.pause();
     }
 
-    watchEffect(() => {
-        if (!settingsShown.value) {
-            if (!timerSound.value) {
-                return;
-            }
-            timerSound.value.pause();
-        }
+    onUnmounted(() => {
+        timerSound.pause();
     });
 </script>
 

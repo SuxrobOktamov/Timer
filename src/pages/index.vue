@@ -268,6 +268,8 @@
 </script>
 
 <template>
+    <audio id="alarmAudioSound" disabled />
+    <audio id="tickingAudioSound" disabled />
     <TheSettingsDialog
         :show="settingsShown"
         :is-start-pomodoros="isStartPomodoros"
