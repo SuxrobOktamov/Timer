@@ -32,8 +32,8 @@
         </div>
         <div class="flex items-center justify-between mt-5">
             <span class="flex items-center gap-2">Dark Mode when running </span>
-            <div :style="{ backgroundColor: `${backgroundSound ? '#84c733cc' : '#ccc'}` }" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]" @click="setBackgroundDark()">
-                <div :style="{ transform: `${backgroundSound ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
+            <div :class="backgroundSound ? `bg-[#84c733cc]` : `bg-[#ccc]`" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full" @click="setBackgroundDark()">
+                <div :class="backgroundSound ? `translate-x-[115%]` : `translate-x-[0]`" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
             </div>
         </div>
         <div class="flex flex-wrap items-center justify-between mt-5 gap-y-2 border-b border-b-2px pb-10">

@@ -79,13 +79,21 @@
         </div>
         <div class="flex items-center justify-between mt-4">
             <span>Auto Start Breaks</span>
-            <div :style="{ backgroundColor: `${isStartBreaks ? '#84c733cc' : '#ccc'}` }" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]" @click="autoStartBreaks">
+            <div
+                :class="isStartBreaks ? `bg-[#84c733cc]` : `bg-[#ccc]`"
+                class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full"
+                @click="autoStartBreaks"
+            >
                 <div :style="{ transform: `${isStartBreaks ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white pointer-events-none" />
             </div>
         </div>
         <div class="flex items-center justify-between mt-4">
             <span>Auto Start Pomodoros</span>
-            <div :style="{ backgroundColor: `${isStartPomodoros ? '#84c733cc' : '#ccc'}` }" class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]" @click="autoStartPomodoro">
+            <div
+                :class="isStartPomodoros ? `bg-[#84c733cc]` : `bg-[#ccc]`"
+                class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full"
+                @click="autoStartPomodoro"
+            >
                 <div :style="{ transform: `${isStartPomodoros ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white pointer-events-none" />
             </div>
         </div>

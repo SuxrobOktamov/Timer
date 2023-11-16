@@ -11,9 +11,9 @@
     }>();
 
     const shown = useVModel(props, "modelValue", emit);
-    const tickingHide = useVModel(props, "tickingSoundDropdownShown", emit);
+    const tickingShown = useVModel(props, "tickingSoundDropdownShown", emit);
 
-    const { alarmSongArr, endSoundChange, alarmSound, alarmSoundName } = storeToRefs(usePomofocusStore());
+    const { alarmSongArr, activeAlarmsSoundId, alarmSound, alarmSoundName } = storeToRefs(usePomofocusStore());
 
     const timerSound = document.getElementById("tickingAudioSound") as HTMLAudioElement;
     const taskEndSound = document.getElementById("alarmAudioSound") as HTMLAudioElement;
@@ -23,7 +23,7 @@
             return;
         }
 
-        taskEndSound.src = alarmSongArr.value[endSoundChange.value].path as string;
+        taskEndSound.src = alarmSongArr.value[activeAlarmsSoundId.value].path as string;
         taskEndSound.load();
     }
 
@@ -32,8 +32,8 @@
             return;
         }
 
-        tickingHide.value = false;
-        endSoundChange.value = id;
+        tickingShown.value = false;
+        activeAlarmsSoundId.value = id;
         loadSong();
         taskEndSound.play();
         timerSound.pause();
@@ -41,7 +41,7 @@
     }
 
     function shownAlarmSound(): void {
-        tickingHide.value = false;
+        tickingShown.value = false;
         shown.value = !shown.value;
     }
 

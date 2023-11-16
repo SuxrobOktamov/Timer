@@ -9,7 +9,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     const taskEndSound = document.createElement("audio");
     const settingsShown = ref<boolean>(false);
     const timerSoundChange = ref<number>(3);
-    const endSoundChange = ref<number>(2);
+    const activeAlarmsSoundId = ref<number>(2);
     const alarmSound = ref<number>(100);
     const tickingSound = ref<number>(100);
     const backgroundSound = ref<boolean>(false);
@@ -98,7 +98,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         startSound.load();
         timerSound.src = tickingSongArr.value[timerSoundChange.value].path as string;
         timerSound.load();
-        taskEndSound.src = alarmSongArr.value[endSoundChange.value].path as string;
+        taskEndSound.src = alarmSongArr.value[activeAlarmsSoundId.value].path as string;
         taskEndSound.load();
     }
 
@@ -113,7 +113,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     }
 
     const alarmSoundName = computed<string>(() => {
-        return alarmSongArr.value[endSoundChange.value].name;
+        return alarmSongArr.value[activeAlarmsSoundId.value].name;
     });
     const tickingSoundName = computed<string>(() => {
         return tickingSongArr.value[timerSoundChange.value].name;
@@ -136,7 +136,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         bgColor,
         settingsShown,
         timerSoundChange,
-        endSoundChange,
+        activeAlarmsSoundId,
         buttons,
         tickingSongArr,
         alarmSongArr,
