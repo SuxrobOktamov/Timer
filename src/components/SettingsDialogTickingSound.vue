@@ -11,7 +11,7 @@
     }>();
 
     const shown = useVModel(props, "modelValue", emit);
-    const alarmHide = useVModel(props, "alarmDropdownShown", emit);
+    const alarmShown = useVModel(props, "alarmDropdownShown", emit);
 
     const { tickingSongArr, timerSoundChange, tickingSound, tickingSoundName } = storeToRefs(usePomofocusStore());
 
@@ -40,7 +40,7 @@
     }
 
     function tickingSoundDropdownShownSound(): void {
-        alarmHide.value = false;
+        alarmShown.value = false;
         shown.value = !shown.value;
     }
 

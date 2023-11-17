@@ -32,5 +32,6 @@ declare module '@vue/runtime-core' {
     TheHeader: typeof import('./components/TheHeader.vue')['default']
     TheSettingsDialog: typeof import('./components/TheSettingsDialog.vue')['default']
     TheTasks: typeof import('./components/TheTasks.vue')['default']
+    TheTimer: typeof import('./components/TheTimer.vue')['default']
   }
 }
