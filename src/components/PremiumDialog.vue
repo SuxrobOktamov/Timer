@@ -1,38 +1,41 @@
-<!-- eslint-disable no-alert -->
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
+    import type { Plan } from "../models/plan.types";
 
-    import type { plan } from "@/types";
-
+    const props = defineProps<{
+        modelValue: boolean
+    }>();
     const emit = defineEmits<{
-        (event: "close"): void
+        (event: "update:modelValue", value: boolean): void
     }>();
 
-    const planArrs = ref<plan[]>([
+    const shown = useVModel(props, "modelValue", emit);
+
+    const planArrs = ref<Plan[]>([
         { id: 1, type: "MONTHLY", price: 1.99, name: "/ month", active: true },
         { id: 2, type: "YEARLY", price: 12, name: "/ year", active: false },
         { id: 3, type: "LIFETIME", price: 36, name: "/ lifetime", active: false },
     ]);
 
     function selectPlan(id: number): void {
-        planArrs.value.map<plan>((item) => {
-            item.active = false;
-            if (item.id === id) {
-                item.active = true;
-            }
+        planArrs.value.map<Plan>((item) => {
+            item.active = item.id === id;
             return item;
         });
     }
+
     function onClickOutside(): void {
+        // eslint-disable-next-line no-alert
         alert("To purchase the premium plan, please login first.");
     }
+
     function close(): void {
-        emit("close");
+        shown.value = false;
     }
 </script>
 
 <template>
-    <TransitionRoot as="template">
+    <TransitionRoot as="template" :show="shown">
         <Dialog as="div" class="relative z-20" @close="close">
             <TransitionChild
                 as="template"

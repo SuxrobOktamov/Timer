@@ -1,19 +1,32 @@
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
+    import { storeToRefs } from "pinia";
 
+    const props = defineProps<{
+        modelValue: boolean
+    }>();
     const emit = defineEmits<{
-        (event: "close"): void
-
+        (event: "update:modelValue", value: boolean): void
     }>();
 
-    function close() {
-        emit("close");
+    const shown = useVModel(props, "modelValue", emit);
+
+    const { changeTheme } = usePomofocusStore();
+    const { editingThemeVariants } = storeToRefs(usePomofocusStore());
+
+    function switchTheme(id: number): void {
+        changeTheme(id);
+        close();
+    }
+
+    function close(): void {
+        shown.value = false;
     }
 </script>
 
 <template>
-    <TransitionRoot as="template">
-        <Dialog as="div" class="relative z-10" @close="close">
+    <TransitionRoot as="template" :show="shown">
+        <Dialog as="div" class="relative z-10" @close="close()">
             <TransitionChild
                 as="template"
                 enter="ease-out duration-300"
@@ -26,7 +39,7 @@
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </TransitionChild>
 
-            <div class="fixed inset-0 z-10 overflow-y-auto">
+            <form class="fixed inset-0 z-10 overflow-y-auto" @submit.prevent>
                 <div class="relative flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <TransitionChild
                         as="template"
@@ -38,32 +51,26 @@
                         leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     >
                         <DialogPanel class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm">
-                            <div
-                                i-carbon-close
-                                class="text-[24px] text-[#575757] absolute cursor-pointer top-2 right-2 font-"
-                                aria-hidden="true"
-                                @click="close"
-                            />
                             <div class="text-start">
-                                <DialogTitle as="h3" class="p-4 border-b text-[16px] font-bold leading-7 text-[#575757]">
-                                    Setting
+                                <DialogTitle as="p" class="text-center p-4 border-b text-[16px] font-bold leading-7 text-[#575757]">
+                                    Pick a color for Pomodoro
                                 </DialogTitle>
-                                <slot name="timer" />
-                                <SettingsDialogTask />
-                                <SettingsDialogSound />
-                                <SettingsDialogTheme />
-                                <SettingsDialogNotification />
-                                <SettingsDialogIntegration />
-                                <div class="p-5 bg-[#efefef] text-end">
-                                    <button class="bg-[#000] text-white px-4 py-1 shadow-md rounded" @click="close">
-                                        Ok
-                                    </button>
+                                <div class="p-5 flex flex-wrap gap-3">
+                                    <div
+                                        v-for="variant in editingThemeVariants"
+                                        :key="variant.id"
+                                        :style="{ backgroundColor: variant.color }"
+                                        class="cursor-pointer w-14 h-14 rounded-lg flex items-center justify-center"
+                                        @click="switchTheme(variant.id)"
+                                    >
+                                        <div v-show="variant.active" i-carbon-checkmark class="text-white text-[20px] font-black" />
+                                    </div>
                                 </div>
                             </div>
                         </DialogPanel>
                     </TransitionChild>
                 </div>
-            </div>
+            </form>
         </Dialog>
     </TransitionRoot>
 </template>

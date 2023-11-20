@@ -1,5 +1,16 @@
 <script lang="ts" setup>
     import { ClipboardDocumentCheckIcon } from "@heroicons/vue/24/outline";
+
+    const autoCheck = ref<boolean>(true);
+    const autoSwitch = ref<boolean>(false);
+
+    function toggleAutoCheck() {
+        autoCheck.value = !autoCheck.value;
+    }
+
+    function toggleAutoSwitch() {
+        autoSwitch.value = !autoSwitch.value;
+    }
 </script>
 
 <template>
@@ -11,16 +22,24 @@
             <span class="flex items-center gap-2">
                 Auto Check Tasks
             </span>
-            <div class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]">
-                <div class="w-[26px] h-[26px] rounded-full bg-white toggle" />
+            <div
+                :class="autoCheck ? `bg-[#84c733cc]` : `bg-[#ccc]`"
+                class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full"
+                @click="toggleAutoCheck"
+            >
+                <div :class="autoCheck ? `translate-x-[115%]` : `translate-x-[0]`" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
             </div>
         </div>
         <div class="flex items-center justify-between mt-4 border-b border-b-2px pb-10">
             <span class="flex items-center gap-2">
                 Auto Switch Tasks
             </span>
-            <div class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]">
-                <div class="w-[26px] h-[26px] rounded-full bg-white toggle" />
+            <div
+                :class="autoSwitch ? `bg-[#84c733cc]` : `bg-[#ccc]`"
+                class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full"
+                @click="toggleAutoSwitch"
+            >
+                <div :class="autoSwitch ? `translate-x-[115%]` : `translate-x-[0]`" class="w-[26px] h-[26px] rounded-full bg-white toggle" />
             </div>
         </div>
     </div>

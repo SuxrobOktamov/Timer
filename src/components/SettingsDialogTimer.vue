@@ -1,5 +1,37 @@
 <script lang="ts" setup>
     import { ClockIcon } from "@heroicons/vue/24/outline";
+    import { storeToRefs } from "pinia";
+    import type { SettingTimer } from "@/models/settingTimer.types";
+
+    defineProps<{
+        isStartPomodoros: boolean
+        isStartBreaks: boolean
+    }>();
+    const emit = defineEmits<{
+        (event: "time-save-changes", obj: SettingTimer): void
+        (event: "auto-start-pomodoro"): void
+        (event: "auto-start-breaks"): void
+    }>();
+
+    const { timerTypes } = storeToRefs(usePomofocusStore());
+
+    const settingTimerObj = ref<SettingTimer>({
+        pomodoroTime: timerTypes.value[0].time,
+        breakShortTime: timerTypes.value[1].time,
+        breakLongTime: timerTypes.value[2].time,
+    });
+
+    function changeInputValue(): void {
+        emit("time-save-changes", settingTimerObj.value);
+    }
+
+    function autoStartPomodoro(): void {
+        emit("auto-start-pomodoro");
+    }
+
+    function autoStartBreaks(): void {
+        emit("auto-start-breaks");
+    }
 </script>
 
 <template>
@@ -15,31 +47,54 @@
                 <label class="text-[#bbb] font-black text-[14px]">
                     Pomodoro
                 </label>
-                <input value="1" class="w-full bg-[#efefef] text-[#555] rounded p-2 outline-none" type="number">
+                <input
+                    v-model="settingTimerObj.pomodoroTime"
+                    class="w-full bg-[#efefef] text-[#555] rounded p-2 outline-none"
+                    type="number"
+                    @input="changeInputValue"
+                >
             </div>
             <div class="flex flex-col gap-1 w-full">
                 <label class="text-[#bbb] font-black text-[14px]">
                     Short Break
                 </label>
-                <input value="1" class="w-full bg-[#efefef] text-[#555] rounded p-2 outline-none" type="number">
+                <input
+                    v-model="settingTimerObj.breakShortTime"
+                    class="w-full bg-[#efefef] text-[#555] rounded p-2 outline-none"
+                    type="number"
+                    @input="changeInputValue"
+                >
             </div>
             <div class="flex flex-col gap-1 w-full">
                 <label class="text-[#bbb] font-black text-[14px]">
                     Long break
                 </label>
-                <input value="1" class="w-full bg-[#efefef] text-[#555] rounded p-2 outline-none" type="number">
+                <input
+                    v-model="settingTimerObj.breakLongTime"
+                    class="w-full bg-[#efefef] text-[#555] rounded p-2 outline-none"
+                    type="number"
+                    @input="changeInputValue"
+                >
             </div>
         </div>
         <div class="flex items-center justify-between mt-4">
             <span>Auto Start Breaks</span>
-            <div class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]">
-                <div class="w-[26px] h-[26px] rounded-full bg-white pointer-events-none" />
+            <div
+                :class="isStartBreaks ? `bg-[#84c733cc]` : `bg-[#ccc]`"
+                class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full"
+                @click="autoStartBreaks"
+            >
+                <div :style="{ transform: `${isStartBreaks ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white pointer-events-none" />
             </div>
         </div>
         <div class="flex items-center justify-between mt-4">
             <span>Auto Start Pomodoros</span>
-            <div class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full bg-[#ccc]">
-                <div class="w-[26px] h-[26px] rounded-full bg-white pointer-events-none" />
+            <div
+                :class="isStartPomodoros ? `bg-[#84c733cc]` : `bg-[#ccc]`"
+                class="cursor-pointer w-[60px] h-[30px] p-[2px] relative rounded-full"
+                @click="autoStartPomodoro"
+            >
+                <div :style="{ transform: `${isStartPomodoros ? 'translateX(115%)' : 'translateX(0%)'}` }" class="w-[26px] h-[26px] rounded-full bg-white pointer-events-none" />
             </div>
         </div>
         <div class="border-b border-b-2px flex items-center justify-between mt-4 pb-10">

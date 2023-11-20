@@ -7,22 +7,31 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AppSoundSetting: typeof import('./components/AppSoundSetting.vue')['default']
-    AppTaskSetting: typeof import('./components/AppTaskSetting.vue')['default']
+    DialogThemeColorsDialog: typeof import('./components/DialogThemeColorsDialog.vue')['default']
     IntegrationTodoistInfoDialog: typeof import('./components/IntegrationTodoistInfoDialog.vue')['default']
     IntegrationWebhookInfoDialog: typeof import('./components/IntegrationWebhookInfoDialog.vue')['default']
     NotificationMobileInfoDialog: typeof import('./components/NotificationMobileInfoDialog.vue')['default']
     PremiumDialog: typeof import('./components/PremiumDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SettingsDialogAlarmSound: typeof import('./components/SettingsDialogAlarmSound.vue')['default']
     SettingsDialogIntegration: typeof import('./components/SettingsDialogIntegration.vue')['default']
     SettingsDialogNotification: typeof import('./components/SettingsDialogNotification.vue')['default']
     SettingsDialogSound: typeof import('./components/SettingsDialogSound.vue')['default']
     SettingsDialogTask: typeof import('./components/SettingsDialogTask.vue')['default']
     SettingsDialogTheme: typeof import('./components/SettingsDialogTheme.vue')['default']
+    SettingsDialogThemeColorsDialog: typeof import('./components/SettingsDialogThemeColorsDialog.vue')['default']
+    SettingsDialogTickingSound: typeof import('./components/SettingsDialogTickingSound.vue')['default']
     SettingsDialogTimer: typeof import('./components/SettingsDialogTimer.vue')['default']
+    TaskAdd: typeof import('./components/TaskAdd.vue')['default']
+    TaskAddEdit: typeof import('./components/TaskAddEdit.vue')['default']
+    TaskDialog: typeof import('./components/TaskDialog.vue')['default']
+    TaskEdit: typeof import('./components/TaskEdit.vue')['default']
+    TasksDropDown: typeof import('./components/TasksDropDown.vue')['default']
     TheFooter: typeof import('./components/TheFooter.vue')['default']
     TheHeader: typeof import('./components/TheHeader.vue')['default']
     TheSettingsDialog: typeof import('./components/TheSettingsDialog.vue')['default']
+    TheTasks: typeof import('./components/TheTasks.vue')['default']
+    TheTimer: typeof import('./components/TheTimer.vue')['default']
   }
 }
