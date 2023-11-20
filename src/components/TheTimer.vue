@@ -4,7 +4,7 @@
     import type { Task } from "@/models/task.types";
     import type { SettingTimer } from "@/models/settingTimer.types";
 
-    const { buttons, backgroundSound, bgColor, settingsShown } = storeToRefs(usePomofocusStore());
+    const { timerTypes, backgroundSound, bgColor, settingsShown } = storeToRefs(usePomofocusStore());
     const { timerSound, taskEndSound, loadSong, startSound } = usePomofocusStore();
 
     const tasks = ref<Task[]>([]);
@@ -20,8 +20,8 @@
     const isStartPomodoros = ref<boolean>(false);
     const isStartBreaks = ref<boolean>(false);
 
-    const overTime = computed<number>(() => {
-        const time = buttons.value.find(item => item.active) as Button;
+    const onTimeOver = computed<number>(() => {
+        const time = timerTypes.value.find(item => item.active) as Button;
         if (freshStart.value) {
             return time.time - 1;
         } else {
@@ -29,13 +29,13 @@
         }
     });
     const spendTime = computed<string>(() => {
-        const focus = buttons.value.find(item => item.active) as Button;
-        return focus.spendTime;
+        const focus = timerTypes.value.find(item => item.active) as Button;
+        return focus.message;
     });
-    const disabled = computed<boolean>(() => {
-        if (!tasks.value.length && buttons.value[0].active) {
+    const timerStartDisabled = computed<boolean>(() => {
+        if (!tasks.value.length && timerTypes.value[0].active) {
             return true;
-        } else if (buttons.value[0].active) {
+        } else if (timerTypes.value[0].active) {
             const disabled = ref<boolean>(false);
             tasks.value.forEach((item: Task) => {
                 if (item.completed && item.active) {
@@ -47,7 +47,7 @@
             return false;
         }
     });
-    const showAllTasks = computed<boolean>(() => {
+    const doneAllTasks = computed<boolean>(() => {
         if (tasks.value.length) {
             return tasks.value.every((item: Task) => item.active);
         } else {
@@ -58,12 +58,12 @@
         if (tasks.value.length === 1) {
             return tasks.value[0].work;
         } else if (tasks.value.length > 1) {
-            const filter = ref<Task[]>(tasks.value.filter((item: Task) => item.completed));
-            if (!filter.value.length) {
+            const filteredPomos = ref<Task[]>(tasks.value.filter((item: Task) => item.completed));
+            if (!filteredPomos.value.length) {
                 tasks.value[0].completed = true;
                 return tasks.value[0].work;
             } else {
-                return filter.value[0].work;
+                return filteredPomos.value[0].work;
             }
         } else {
             return "";
@@ -72,7 +72,7 @@
 
     function changeButton(id: number): void {
         timerSound.pause();
-        buttons.value.map<Button>((item) => {
+        timerTypes.value.map<Button>((item) => {
             if (item.id === id) {
                 item.active = true;
                 refreshTimer();
@@ -86,8 +86,8 @@
     function startTimer(): void {
         isStart.value = !isStart.value;
         if (isStart.value) {
-            const borderLength = ref<number>((100 / (overTime.value * 60)));
-            if (!(overTime.value === 0 && overSecond.value === "00")) {
+            const borderLength = ref<number>((100 / (onTimeOver.value * 60)));
+            if (!(onTimeOver.value === 0 && overSecond.value === "00")) {
                 updateSecond.value = setInterval(() => {
                     second.value--;
                     borderW.value += borderLength.value;
@@ -104,7 +104,7 @@
                 }, 1000);
             }
             updateMinute.value = setInterval(() => {
-                buttons.value.forEach((item: Button) => {
+                timerTypes.value.forEach((item: Button) => {
                     if (item.active) {
                         item.time--;
                     }
@@ -117,7 +117,7 @@
         if (isStart.value && backgroundSound.value) {
             bgColor.value = "black";
         } else {
-            buttons.value.forEach((item: Button) => {
+            timerTypes.value.forEach((item: Button) => {
                 if (item.active) {
                     bgColor.value = item.color;
                 }
@@ -126,7 +126,7 @@
     }
 
     function finishedTasks(): void {
-        if (overTime.value === 0 && second.value === 0 && buttons.value[0].active) {
+        if (onTimeOver.value === 0 && second.value === 0 && timerTypes.value[0].active) {
             if (tasks.value.length === 1) {
                 tasks.value[0].finishedCount++;
                 if (tasks.value[0].finishedCount === tasks.value[0].count) {
@@ -149,10 +149,10 @@
             if (isStartBreaks.value) {
                 playTimer();
             }
-        } else if (overTime.value === 0 && second.value === 0) {
+        } else if (onTimeOver.value === 0 && second.value === 0) {
             refreshTimer();
             nextTimer();
-            if (isStartPomodoros.value && !disabled.value) {
+            if (isStartPomodoros.value && !timerStartDisabled.value) {
                 playTimer();
             }
         }
@@ -173,15 +173,15 @@
         freshStart.value = false;
         timerSound.pause();
         refreshTimer();
-        if (buttons.value[0].active) {
-            buttons.value.forEach((item: Button) => item.active = false);
-            buttons.value[1].active = true;
-        } else if (buttons.value[1].active) {
-            buttons.value.forEach((item: Button) => item.active = false);
-            buttons.value[0].active = true;
+        if (timerTypes.value[0].active) {
+            timerTypes.value.forEach((item: Button) => item.active = false);
+            timerTypes.value[1].active = true;
+        } else if (timerTypes.value[1].active) {
+            timerTypes.value.forEach((item: Button) => item.active = false);
+            timerTypes.value[0].active = true;
         } else {
-            buttons.value.forEach((item: Button) => item.active = false);
-            buttons.value[0].active = true;
+            timerTypes.value.forEach((item: Button) => item.active = false);
+            timerTypes.value[0].active = true;
         }
     }
 
@@ -196,8 +196,8 @@
         if (!isStart.value) {
             timerSound.pause();
             timerSound.loop = false;
-        } else if (buttons.value[0].active) {
-            if (!(overTime.value === 0 && overSecond.value === "00")) {
+        } else if (timerTypes.value[0].active) {
+            if (!(onTimeOver.value === 0 && overSecond.value === "00")) {
                 timerSound.play();
                 timerSound.loop = true;
             }
@@ -240,9 +240,9 @@
 
     function timeSaveChanges(obj: SettingTimer): void {
         if (obj.breakLongTime && obj.breakShortTime && obj.pomodoroTime) {
-            buttons.value[0].time = obj.pomodoroTime;
-            buttons.value[1].time = obj.breakShortTime;
-            buttons.value[2].time = obj.breakLongTime;
+            timerTypes.value[0].time = obj.pomodoroTime;
+            timerTypes.value[1].time = obj.breakShortTime;
+            timerTypes.value[2].time = obj.breakLongTime;
         }
     }
 
@@ -258,7 +258,7 @@
         finishedTasks();
         if (settingsShown.value) {
             refreshTimer();
-            buttons.value.forEach((item: Button) => {
+            timerTypes.value.forEach((item: Button) => {
                 if (item.active) {
                     bgColor.value = item.color;
                 }
@@ -270,19 +270,24 @@
 <template>
     <TheSettingsDialog
         :show="settingsShown"
-        :is-start-pomodoros="isStartPomodoros"
-        :is-start-breaks="isStartBreaks"
         @close="closeSettings"
-        @time-save-changes="timeSaveChanges"
-        @auto-start-pomodoro="autoStartPomodoro"
-        @auto-start-breaks="autoStartBreaks"
-    />
+    >
+        <template #timer>
+            <SettingsDialogTimer
+                :is-start-pomodoros="isStartPomodoros"
+                :is-start-breaks="isStartBreaks"
+                @time-save-changes="timeSaveChanges"
+                @auto-start-pomodoro="autoStartPomodoro"
+                @auto-start-breaks="autoStartBreaks"
+            />
+        </template>
+    </TheSettingsDialog>
     <div class="w-full text-center px-2 mx-auto max-w-[620px]">
         <div class="h-2px rounded-full bg-white mb-[40px]" :style="{ width: `${borderW}%` }" />
         <div class="m-auto max-w-[480px] w-full pt-[20px] pb-[30px] rounded-6px bg-[#ffffff1a] shadow-md">
             <div class="flex justify-center gap-1 lt-sm:gap-1">
                 <button
-                    v-for="button in buttons"
+                    v-for="button in timerTypes"
                     :key="button.id"
                     :style="{ backgroundColor: `${button.active ? '#00000026' : 'transparent'}` }"
                     class="overflow-hidden capitalize lt-sm:h-[28px] lt-sm:text-[14px] rounded-[4px] text-[16px] px-[12px] py-[2px] h-[28px] cursor-pointer text-white font-bold"
@@ -292,13 +297,13 @@
                 </button>
             </div>
             <div class="tracking-tighter text-[100px] font-bold mt-5 text-center lt-sm:mt-4 lt-sm:text-[70px]">
-                {{ overTime >= 10 ? overTime : `0${overTime}` }} : {{ overSecond }}
+                {{ onTimeOver >= 10 ? onTimeOver : `0${onTimeOver}` }} : {{ overSecond }}
             </div>
             <div class="relative w-full text-center flex items-center justify-center">
                 <button
-                    :style="{ color: bgColor, cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? '0.4' : '1' }"
+                    :style="{ color: bgColor, cursor: timerStartDisabled ? 'not-allowed' : 'pointer', opacity: timerStartDisabled ? '0.4' : '1' }"
                     :class="isStart ? 'stop' : 'starts'"
-                    :disabled="disabled"
+                    :disabled="timerStartDisabled"
                     class="uppercase border-none lt-sm:w-[170px] lt-sm:h-[45px] lt-sm:text-[20px]"
                     @click="playTimer"
                 >
@@ -318,13 +323,13 @@
         <TheTasks
             :refresh-timer="refreshTimer"
             :tasks="tasks"
-            :buttons="buttons"
+            :timer-types="timerTypes"
             @delete="deleteTask"
             @clear-finished-tasks="clearFinishedTasks"
             @clear-all-tasks="clearAllTasks"
             @submit="onSubmit"
         />
-        <div v-show="showAllTasks" class="fixed z-[9999] bottom-0 w-full left-0 box-border text-center py-5">
+        <div v-show="doneAllTasks" class="fixed z-[9999] bottom-0 w-full left-0 box-border text-center py-5">
             <div class="m-auto flex items-center max-w-[480px] justify-between bg-white text-[black] rounded-6px shadow-2xl shadow-[#666] p-4">
                 <p>You've finished all your tasks for today 🎉</p>
                 <button

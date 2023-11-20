@@ -1,32 +1,13 @@
 <script setup lang="ts">
     import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
-    import type { SettingTimer } from "@/models/settingTimer.types";
 
-    defineProps<{
-        isStartPomodoros: boolean
-        isStartBreaks: boolean
-    }>();
     const emit = defineEmits<{
         (event: "close"): void
-        (event: "time-save-changes", obj: SettingTimer): void
-        (event: "auto-start-pomodoro"): void
-        (event: "auto-start-breaks"): void
+
     }>();
 
     function close() {
         emit("close");
-    }
-
-    function timeSaveChanges(obj: SettingTimer): void {
-        emit("time-save-changes", obj);
-    }
-
-    function autoStartPomodoro(): void {
-        emit("auto-start-pomodoro");
-    }
-
-    function autoStartBreaks(): void {
-        emit("auto-start-breaks");
     }
 </script>
 
@@ -67,13 +48,7 @@
                                 <DialogTitle as="h3" class="p-4 border-b text-[16px] font-bold leading-7 text-[#575757]">
                                     Setting
                                 </DialogTitle>
-                                <SettingsDialogTimer
-                                    :is-start-pomodoros="isStartPomodoros"
-                                    :is-start-breaks="isStartBreaks"
-                                    @time-save-changes="timeSaveChanges"
-                                    @auto-start-pomodoro="autoStartPomodoro"
-                                    @auto-start-breaks="autoStartBreaks"
-                                />
+                                <slot name="timer" />
                                 <SettingsDialogTask />
                                 <SettingsDialogSound />
                                 <SettingsDialogTheme />

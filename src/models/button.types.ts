@@ -4,5 +4,5 @@ export interface Button {
     active: boolean
     time: number
     color: string
-    spendTime: string
+    message: string
 }

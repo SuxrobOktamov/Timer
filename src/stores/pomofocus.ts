@@ -73,10 +73,10 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
 
     const bgColor = ref<string>(pomodoroTheme.value);
 
-    const buttons = ref<Button[]>([
-        { name: "Pomodoro", id: 1, active: true, time: 1, color: pomodoroTheme.value, spendTime: "Time to focus!" },
-        { name: "Short Break", id: 2, active: false, time: 1, color: shortBreakTheme.value, spendTime: "Time for a break!" },
-        { name: "Long Break", id: 3, active: false, time: 15, color: longBreakTheme.value, spendTime: "Time for a break!" },
+    const timerTypes = ref<Button[]>([
+        { name: "Pomodoro", id: 1, active: true, time: 1, color: pomodoroTheme.value, message: "Time to focus!" },
+        { name: "Short Break", id: 2, active: false, time: 1, color: shortBreakTheme.value, message: "Time for a break!" },
+        { name: "Long Break", id: 3, active: false, time: 15, color: longBreakTheme.value, message: "Time for a break!" },
     ]);
     const tickingSongArr = ref<Song[]>([
         { path: "", id: 0, name: "None" },
@@ -120,16 +120,16 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
     });
 
     watchEffect(() => {
-        if (buttons.value[0].active) {
+        if (timerTypes.value[0].active) {
             bgColor.value = pomodoroTheme.value;
-        } else if (buttons.value[1].active) {
+        } else if (timerTypes.value[1].active) {
             bgColor.value = shortBreakTheme.value;
         } else {
             bgColor.value = longBreakTheme.value;
         }
-        buttons.value[0].color = pomodoroTheme.value;
-        buttons.value[1].color = shortBreakTheme.value;
-        buttons.value[2].color = longBreakTheme.value;
+        timerTypes.value[0].color = pomodoroTheme.value;
+        timerTypes.value[1].color = shortBreakTheme.value;
+        timerTypes.value[2].color = longBreakTheme.value;
     });
 
     return {
@@ -137,7 +137,7 @@ export const usePomofocusStore = defineStore("pomofocus", () => {
         settingsShown,
         timerSoundChange,
         activeAlarmsSoundId,
-        buttons,
+        timerTypes,
         tickingSongArr,
         alarmSongArr,
         backgroundSound,

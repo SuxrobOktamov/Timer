@@ -15,7 +15,7 @@
         (event: "submit", type: any): void
     }>();
 
-    const { buttons } = storeToRefs(usePomofocusStore());
+    const { timerTypes } = storeToRefs(usePomofocusStore());
 
     const editObj = ref<Edit>({
         noteShown: true, taskName: "", taskRepeatCount: 0, taskNote: "",
@@ -144,33 +144,33 @@
         const today = new Date() as Date;
         const hours = today.getHours() as number;
         const minutes = today.getMinutes() as number;
-        const pomo = Math.floor((minutes + ((buttons.value[0].time * pomos.value))) / 60) as number;
+        const pomo = Math.floor((minutes + ((timerTypes.value[0].time * pomos.value))) / 60) as number;
         let date = "" as string;
         if (pomo > 0 && !((hours + pomo) > 24)) {
-            if ((minutes + (pomos.value * buttons.value[0].time - (pomo * 60)) < 10 && (hours + pomo) < 10)) {
-                date = `0${hours + pomo} : 0${minutes + ((pomos.value * buttons.value[0].time) - (pomo * 60))}`;
-            } else if ((minutes + (pomos.value * buttons.value[0].time - (pomo * 60)) > 10 && (hours + pomo) < 10)) {
-                date = `0${hours + pomo} : ${minutes + ((pomos.value * buttons.value[0].time) - (pomo * 60))}`;
-            } else if ((minutes + (pomos.value * buttons.value[0].time - (pomo * 60)) < 10 && (hours + pomo) > 10)) {
-                date = `${hours + pomo} : 0${minutes + ((pomos.value * buttons.value[0].time) - (pomo * 60))}`;
+            if ((minutes + (pomos.value * timerTypes.value[0].time - (pomo * 60)) < 10 && (hours + pomo) < 10)) {
+                date = `0${hours + pomo} : 0${minutes + ((pomos.value * timerTypes.value[0].time) - (pomo * 60))}`;
+            } else if ((minutes + (pomos.value * timerTypes.value[0].time - (pomo * 60)) > 10 && (hours + pomo) < 10)) {
+                date = `0${hours + pomo} : ${minutes + ((pomos.value * timerTypes.value[0].time) - (pomo * 60))}`;
+            } else if ((minutes + (pomos.value * timerTypes.value[0].time - (pomo * 60)) < 10 && (hours + pomo) > 10)) {
+                date = `${hours + pomo} : 0${minutes + ((pomos.value * timerTypes.value[0].time) - (pomo * 60))}`;
             } else {
-                date = `${hours + pomo} : ${minutes + ((pomos.value * buttons.value[0].time) - (pomo * 60))}`;
+                date = `${hours + pomo} : ${minutes + ((pomos.value * timerTypes.value[0].time) - (pomo * 60))}`;
             }
         } else if (((hours + pomo) > 24)) {
             date = `00 : 00`;
         } else {
-            if ((minutes + (buttons.value[0].time * pomos.value)) < 10 && (hours) < 10) {
-                date = `0${hours} : 0${minutes + (buttons.value[0].time * pomos.value)}`;
+            if ((minutes + (timerTypes.value[0].time * pomos.value)) < 10 && (hours) < 10) {
+                date = `0${hours} : 0${minutes + (timerTypes.value[0].time * pomos.value)}`;
             } else
-                if ((minutes + (buttons.value[0].time * pomos.value)) > 10 && (hours) < 10) {
-                    date = `0${hours} : ${minutes + (buttons.value[0].time * pomos.value)}`;
-                } else if ((minutes + (buttons.value[0].time * pomos.value)) < 10 && (hours) > 10) {
-                    date = `${hours} : 0${minutes + (buttons.value[0].time * pomos.value)}`;
+                if ((minutes + (timerTypes.value[0].time * pomos.value)) > 10 && (hours) < 10) {
+                    date = `0${hours} : ${minutes + (timerTypes.value[0].time * pomos.value)}`;
+                } else if ((minutes + (timerTypes.value[0].time * pomos.value)) < 10 && (hours) > 10) {
+                    date = `${hours} : 0${minutes + (timerTypes.value[0].time * pomos.value)}`;
                 } else {
-                    date = `${hours} : ${minutes + (buttons.value[0].time * pomos.value)}`;
+                    date = `${hours} : ${minutes + (timerTypes.value[0].time * pomos.value)}`;
                 }
         }
-        timeHour.value = (buttons.value[0].time * pomos.value) / 60;
+        timeHour.value = (timerTypes.value[0].time * pomos.value) / 60;
         return date;
     });
 </script>

@@ -13,12 +13,12 @@
         (event: "auto-start-breaks"): void
     }>();
 
-    const { buttons } = storeToRefs(usePomofocusStore());
+    const { timerTypes } = storeToRefs(usePomofocusStore());
 
     const settingTimerObj = ref<SettingTimer>({
-        pomodoroTime: buttons.value[0].time,
-        breakShortTime: buttons.value[1].time,
-        breakLongTime: buttons.value[2].time,
+        pomodoroTime: timerTypes.value[0].time,
+        breakShortTime: timerTypes.value[1].time,
+        breakLongTime: timerTypes.value[2].time,
     });
 
     function changeInputValue(): void {
